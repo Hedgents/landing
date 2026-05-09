@@ -8,31 +8,31 @@ const appleEase = [0.25, 0.1, 0.25, 1.0] as const;
 const FAQS = [
   {
     q: "What is Hedgents?",
-    a: "Hedgents is a self-hosted treasury management product for institutional operators. It's five Rust binaries that run on your hardware, communicating over a peer-to-peer mesh, each owning one role and one cryptographic identity. It manages DeFi positions on Solana — currently Kamino LST, Kamino lending, and JLP delta-neutral strategies.",
+    a: "Hedgents is a self-hosted treasury management system for institutions. You install it on your own servers. It runs five specialized agents that execute yield strategies on Solana — currently leveraged staking, USDC lending, and a delta-neutral position on Jupiter's liquidity pool. You stay in full control of your capital at all times.",
   },
   {
     q: "Who is this for?",
-    a: "Institutional treasury operators, family offices, and professional traders who want to run autonomous DeFi strategies on their own infrastructure. Not for retail — you need to understand key management, Solana, and how to run Rust binaries on a server.",
+    a: "Crypto funds, family offices, and institutional treasuries that want autonomous DeFi yield without delegating custody to a third party. If your compliance team has blocked every existing DeFi automation tool because it requires handing over keys — Hedgents is built for that constraint.",
   },
   {
-    q: "Where are my keys stored?",
-    a: "Only on your machine. An Ed25519 role key and a Solana wallet keypair are generated into ~/01fi-soak/secrets/ on first run. The operator's keypair file IS the custody — no vault program, no multisig in v0. Treat it like a hot wallet.",
+    q: "Where are my signing keys stored?",
+    a: "Only on your machines, in a directory you control. Hedgents never touches them — there is no Hedgents cloud, no API key sent back to us, no telemetry leaving your infrastructure. Your team generates the keys on first run and they stay local.",
   },
   {
-    q: "Can a compromised daemon steal funds?",
-    a: "Two daemons (riskwatcher, researcher) are compile-time isolated — they literally cannot link to the signing code. For the three signing daemons, every transaction requires a per-instruction whitelist check (SigningWhitelist::verify_ixns). The riskwatcher can issue a soft-veto that pauses multiply. This is defense in depth, not a single gate.",
+    q: "What if one of the agents is compromised?",
+    a: "The two monitoring agents — the risk officer and the signal publisher — are architecturally prevented from moving funds. They have no signing authority. For the three trading agents, a dedicated risk monitor watches every position and can pause trading if limits are breached. No single agent has unchecked authority.",
   },
   {
-    q: "Why Rust and not a smart contract?",
-    a: "Hedgents is not a protocol — it's a product that runs as binaries on your hardware. It uses smart contracts (Kamino, Jupiter Perps) as venues, but the orchestration, risk management, and signing logic lives off-chain. This gives you full control over execution, key management, and upgrade cadence.",
+    q: "How is this different from a trading bot?",
+    a: "A trading bot is a single process with a single set of keys. Hedgents separates execution, risk management, and market research into five independent agents with distinct roles. The risk agent can block a trade but cannot initiate one. The trading agents cannot change their own risk parameters. That separation is what makes it auditable.",
   },
   {
-    q: "Is this mainnet-ready?",
-    a: "multiply-daemon and stable-yield-daemon are mainnet-ready with $50 runbooks. hedgedjlp-daemon is simulation-only pending a live custody loader. riskwatcher and researcher are infrastructure daemons that don't take positions.",
+    q: "Is this ready for live capital?",
+    a: "The leveraged staking and USDC lending strategies are mainnet-ready and have been tested with live positions. The delta-neutral JLP strategy is currently in paper-trading mode. We recommend starting with a paper-trading period on your own infrastructure before deploying live capital — the dashboard shows real-time APY projections throughout.",
   },
   {
-    q: "How does the mesh communication work?",
-    a: "Each daemon is an independent libp2p peer with a long-lived Ed25519 role key. Messages are signed CBOR envelopes (Assign, Approve, Report, Escalate, etc.) with monotonic per-sender nonces for replay protection. Targeted messages route point-to-point; broadcasts fan out via gossipsub.",
+    q: "How do the agents communicate with each other?",
+    a: "Agents communicate over an encrypted peer-to-peer network — there is no central server routing messages. Every instruction is cryptographically signed by the sender and verified by the receiver. This means every action is attributable and the full history is auditable, which is what compliance teams typically require.",
   },
 ];
 

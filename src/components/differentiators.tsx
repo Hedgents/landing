@@ -50,10 +50,10 @@ export function Differentiators() {
           className="mb-10"
         >
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent mb-4">
-            04 / Why We Win
+            04 / How it&apos;s built
           </p>
           <h2 className="font-serif text-4xl sm:text-5xl font-bold text-foreground leading-tight">
-            Three pillars of structural safety.
+            Three layers of verifiable isolation.
           </h2>
           <p className="mt-3 text-muted-foreground max-w-xl">
             Code, network, and protocol — verifiable properties of the deployment, not runtime trust.

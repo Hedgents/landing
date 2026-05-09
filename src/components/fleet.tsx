@@ -1,58 +1,83 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 const ease = [0.25, 0.1, 0.25, 1.0] as const;
 
 const DAEMONS = [
   {
+    id: "multiply",
     name: "multiply-daemon",
+    displayName: "Multiply",
+    avatar: "/avatar-multiply.png",
     role: "Leveraged Staking Trader",
-    strategy: "Kamino LST farming with leverage",
+    strategy: "Kamino LST farming · 2.5× leverage",
     status: "mainnet-ready",
     signs: true,
   },
   {
+    id: "stable-yield",
     name: "stable-yield-daemon",
+    displayName: "Stable Yield",
+    avatar: "/avatar-stable-yield.png",
     role: "Passive Lender",
     strategy: "Kamino USDC supply",
     status: "mainnet-ready",
     signs: true,
   },
   {
+    id: "hedgedjlp",
     name: "hedgedjlp-daemon",
+    displayName: "Hedged JLP",
+    avatar: "/avatar-hedgedjlp.png",
     role: "Delta-Neutral Basis Trader",
-    strategy: "Long JLP, short SOL / ETH / BTC perps",
+    strategy: "Long JLP · short SOL/ETH/BTC perps",
     status: "sim-only",
     signs: true,
   },
   {
+    id: "riskwatcher",
     name: "riskwatcher-daemon",
+    displayName: "Riskwatcher",
+    avatar: "/avatar-riskwatcher.png",
     role: "Risk Officer",
-    strategy: "Observes positions, emits soft-veto Escalates",
+    strategy: "Monitors LTV · emits Escalate signals",
     status: "active",
     signs: false,
   },
   {
+    id: "researcher",
     name: "researcher-daemon",
+    displayName: "Researcher",
+    avatar: "/avatar-researcher.png",
     role: "Signal Publisher",
-    strategy: "Kamino rates · Pyth prices · JLP yield · peg drift",
+    strategy: "Kamino rates · Pyth prices · JLP yield",
     status: "active",
     signs: false,
   },
 ];
 
+const STATUS_COLOR: Record<string, string> = {
+  "mainnet-ready": "var(--gold)",
+  "sim-only":      "oklch(0.78 0.18 70)",
+  "active":        "oklch(0.60 0.06 262)",
+};
+
 export function Fleet() {
   return (
-    <section id="fleet" className="relative min-h-screen snap-start scroll-mt-12 border-t border-border/40 flex flex-col justify-center">
-      <div className="mx-auto max-w-6xl px-6 py-24 sm:py-32">
+    <section
+      id="fleet"
+      className="relative min-h-screen snap-start scroll-mt-12 border-t border-border/40 flex flex-col justify-center"
+    >
+      <div className="mx-auto max-w-6xl px-8 sm:px-12 w-full py-12">
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, ease }}
-          className="max-w-3xl mb-14"
+          className="mb-10"
         >
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent mb-4">
             03 / Fleet
@@ -60,87 +85,80 @@ export function Fleet() {
           <h2 className="font-serif text-4xl sm:text-5xl font-bold text-foreground leading-tight">
             Five daemons. Five roles.
           </h2>
-          <p className="mt-4 text-muted-foreground leading-relaxed">
-            Each daemon is a Rust binary with one cryptographic identity and one role.
-            Three sign transactions. Two are compile-time isolated — they cannot sign, ever.
+          <p className="mt-4 text-muted-foreground leading-relaxed max-w-2xl">
+            Each agent has exactly one role and cannot exceed it.
+            Three manage positions and sign transactions. Two monitor and publish signals —
+            they have no authority to move funds, by design.
           </p>
         </motion.div>
 
-        {/* Fleet table */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2, ease }}
-          className="border border-border/50 rounded overflow-hidden bg-card"
-        >
-          {/* Table header */}
-          <div className="grid grid-cols-[2.2fr_1.6fr_2fr_auto] gap-4 px-5 py-3 border-b border-border/40 bg-muted/40">
-            {["Daemon", "Role", "Strategy", "Auth"].map((h) => (
-              <span key={h} className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/60">
-                {h}
-              </span>
-            ))}
-          </div>
-
-          {/* Rows */}
+        {/* Agent cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {DAEMONS.map((d, i) => (
             <motion.div
-              key={d.name}
-              initial={{ opacity: 0, x: -6 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              key={d.id}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.08 * i, ease }}
-              className="grid grid-cols-[2.2fr_1.6fr_2fr_auto] gap-4 items-center px-5 py-4 border-b border-border/30 last:border-0 hover:bg-muted/20 transition-colors"
+              transition={{ duration: 0.45, delay: 0.06 * i, ease }}
+              className="group relative flex flex-col rounded-xl border border-border/50 bg-card hover:border-border/80 transition-colors overflow-hidden"
             >
-              {/* Daemon name + status dot */}
-              <div className="flex items-center gap-2.5 min-w-0">
-                <span
-                  className="w-1.5 h-1.5 rounded-full shrink-0"
-                  style={{
-                    backgroundColor:
-                      d.status === "mainnet-ready"
-                        ? "var(--gold)"
-                        : d.status === "sim-only"
-                        ? "oklch(0.78 0.18 70)"
-                        : "oklch(0.60 0.06 262)",
-                  }}
+              {/* Avatar */}
+              <div className="relative aspect-square w-full overflow-hidden bg-[#0d0d1a]">
+                <Image
+                  src={d.avatar}
+                  alt={d.displayName}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                 />
-                <code className="font-mono text-sm text-foreground/90 truncate">{d.name}</code>
+                {/* Auth badge overlaid on image */}
+                <div className="absolute top-2 right-2">
+                  <span
+                    className="font-mono text-[9px] px-1.5 py-0.5 rounded border backdrop-blur-sm"
+                    style={
+                      d.signs
+                        ? {
+                            borderColor: "color-mix(in oklch, var(--gold) 50%, transparent)",
+                            color: "var(--gold)",
+                            backgroundColor: "color-mix(in oklch, var(--gold) 12%, transparent)",
+                          }
+                        : {
+                            borderColor: "rgba(255,255,255,0.15)",
+                            color: "rgba(255,255,255,0.45)",
+                            backgroundColor: "rgba(0,0,0,0.4)",
+                          }
+                    }
+                  >
+                    {d.signs ? "SIGNS" : "READ"}
+                  </span>
+                </div>
               </div>
 
-              {/* Role */}
-              <span className="text-sm text-muted-foreground">{d.role}</span>
-
-              {/* Strategy */}
-              <span className="text-xs text-muted-foreground/70 font-mono leading-relaxed">
-                {d.strategy}
-              </span>
-
-              {/* Auth badge */}
-              <span
-                className="font-mono text-[10px] px-2 py-0.5 rounded border whitespace-nowrap"
-                style={
-                  d.signs
-                    ? {
-                        borderColor: "color-mix(in oklch, var(--gold) 40%, transparent)",
-                        color: "var(--gold)",
-                        backgroundColor: "color-mix(in oklch, var(--gold) 8%, transparent)",
-                      }
-                    : {
-                        borderColor: "var(--border)",
-                        color: "var(--muted-foreground)",
-                      }
-                }
-              >
-                {d.signs ? "SIGNS" : "READ"}
-              </span>
+              {/* Card body */}
+              <div className="p-3 flex flex-col gap-1.5 flex-1">
+                <div className="flex items-center gap-1.5">
+                  <span
+                    className="w-1.5 h-1.5 rounded-full shrink-0"
+                    style={{ backgroundColor: STATUS_COLOR[d.status] }}
+                  />
+                  <span className="font-mono text-[10px] text-muted-foreground/50 truncate">
+                    {d.name}
+                  </span>
+                </div>
+                <p className="font-serif font-bold text-sm text-foreground leading-snug">
+                  {d.role}
+                </p>
+                <p className="font-mono text-[10px] text-muted-foreground/60 leading-relaxed">
+                  {d.strategy}
+                </p>
+              </div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
         {/* Legend */}
-        <div className="mt-4 flex flex-wrap gap-6 font-mono text-[10px] text-muted-foreground/50">
+        <div className="mt-5 flex flex-wrap gap-6 font-mono text-[10px] text-muted-foreground/40">
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--gold)" }} />
             mainnet-ready

@@ -5,9 +5,10 @@ import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 const SECTIONS = [
-  { id: "problem",          label: "Problem" },
+  { id: "problem",          label: "The gap" },
   { id: "fleet",            label: "Fleet" },
   { id: "differentiators",  label: "Safety" },
+  { id: "benchmarks",       label: "Benchmarks" },
   { id: "architecture",     label: "Architecture" },
   { id: "faq",              label: "FAQ" },
 ];
@@ -69,13 +70,11 @@ export function Navbar() {
             GitHub
           </a>
           <a
-            href="https://github.com/Hedgents/fleet#quick-start-devnet"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="mailto:contact@infinityteam.io"
             className="inline-flex items-center justify-center rounded px-3 py-1 font-mono text-xs font-semibold transition-opacity hover:opacity-80"
             style={{ backgroundColor: "var(--gold)", color: "var(--navy)" }}
           >
-            Run Fleet →
+            Request access →
           </a>
         </div>
       </nav>

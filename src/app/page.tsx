@@ -1,9 +1,13 @@
 import { Hero } from "@/components/hero";
 import { Problem } from "@/components/problem";
+import { ProofStrip } from "@/components/proof-strip";
 import { Fleet } from "@/components/fleet";
 import { Differentiators } from "@/components/differentiators";
+import { Benchmarks } from "@/components/benchmarks";
+import { InlineCTA } from "@/components/inline-cta";
 import { Architecture } from "@/components/architecture";
 import { FAQ } from "@/components/faq";
+import { CTA } from "@/components/cta";
 
 export default function Home() {
   return (
@@ -11,11 +15,15 @@ export default function Home() {
       <Hero />
       <div className="bg-background">
         <Problem />
+        <ProofStrip />
         <Fleet />
         <Differentiators />
+        <Benchmarks />
+        <InlineCTA />
         <Architecture />
         <FAQ />
       </div>
+      <CTA />
     </div>
   );
 }

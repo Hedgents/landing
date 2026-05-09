@@ -1,7 +1,17 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { TradingMesh3D } from "@/components/trading-mesh-3d";
+import { DashboardMock } from "@/components/dashboard-mock";
+import { useLiveRates } from "@/hooks/useLiveRates";
+
+const AGENTS = [
+  { id: "multiply",     label: "Multiply",     avatar: "/avatar-multiply.png" },
+  { id: "stable-yield", label: "Stable Yield",  avatar: "/avatar-stable-yield.png" },
+  { id: "hedgedjlp",   label: "Hedged JLP",    avatar: "/avatar-hedgedjlp.png" },
+  { id: "riskwatcher", label: "Riskwatcher",   avatar: "/avatar-riskwatcher.png" },
+  { id: "researcher",  label: "Researcher",    avatar: "/avatar-researcher.png" },
+];
 
 const ease = [0.25, 0.1, 0.25, 1.0] as const;
 
@@ -12,6 +22,9 @@ const fade = (delay = 0) => ({
 });
 
 export function Hero() {
+  const { rates, live } = useLiveRates();
+  const apy = rates.portfolioAprPct.toFixed(2);
+
   return (
     <section
       className="relative flex min-h-screen snap-start scroll-mt-12 overflow-hidden"
@@ -55,17 +68,44 @@ export function Hero() {
           Without surrendering custody.
         </motion.p>
 
-        {/* Hook */}
+        {/* Hook — two paragraphs: custody, then governance */}
         <motion.p
           {...fade(0.35)}
           className="mt-7 text-sm sm:text-base leading-relaxed"
-          style={{ color: "rgba(255,255,255,0.55)", maxWidth: "440px" }}
+          style={{ color: "rgba(255,255,255,0.55)", maxWidth: "460px" }}
         >
-          25 AI-DeFi agent projects on Solana. Every one requires handing over
-          keys. Anchorage Digital can&apos;t legally use any of them.{" "}
+          Every other DeFi automation platform holds your signing keys on their
+          servers.{" "}
           <span style={{ color: "rgba(255,255,255,0.85)", fontWeight: 600 }}>
-            We solve that.
+            Hedgents runs on your hardware — there is no Hedgents server.
+          </span>{" "}
+          Your keys never leave your machines.
+        </motion.p>
+        <motion.p
+          {...fade(0.45)}
+          className="mt-4 text-sm sm:text-base leading-relaxed"
+          style={{ color: "rgba(255,255,255,0.45)", maxWidth: "460px" }}
+        >
+          Unlike a single trading bot, it deploys a{" "}
+          <span style={{ color: "rgba(255,255,255,0.75)" }}>
+            fleet of five specialized agents
           </span>
+          {" "}— each with one fixed role. The agent that monitors risk
+          cannot trade. The agents that trade cannot change their own limits.
+          Currently paper-trading at{" "}
+          <span style={{ color: "var(--gold)", fontWeight: 600 }}>
+            {apy}% blended APY
+          </span>
+          {live && (
+            <span className="inline-flex items-center gap-1 ml-1.5 align-middle">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
+              </span>
+              <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "10px" }}>live</span>
+            </span>
+          )}
+          {" "}on mainnet.
         </motion.p>
 
         {/* CTAs */}
@@ -74,13 +114,11 @@ export function Hero() {
           className="mt-10 flex flex-col sm:flex-row gap-3"
         >
           <a
-            href="https://github.com/Hedgents/fleet#quick-start-devnet"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="mailto:contact@infinityteam.io"
             className="inline-flex items-center justify-center rounded px-6 py-2.5 font-mono text-sm font-semibold transition-opacity hover:opacity-80"
             style={{ backgroundColor: "var(--gold)", color: "var(--navy)" }}
           >
-            ./run-fleet.sh devnet
+            Request access →
           </a>
           <a
             href="https://github.com/Hedgents/fleet"
@@ -96,27 +134,57 @@ export function Hero() {
           </a>
         </motion.div>
 
-        {/* Bottom meta */}
-        <motion.p
+        {/* Agent avatar strip */}
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.5 }}
-          className="mt-16 font-mono text-[10px] uppercase tracking-widest"
-          style={{ color: "rgba(255,255,255,0.2)" }}
+          transition={{ delay: 0.9, duration: 0.6 }}
+          className="mt-12 flex items-center gap-3"
         >
-          Five-role agent fleet · On-prem · Solana
-        </motion.p>
+          {AGENTS.map((a, i) => (
+            <motion.div
+              key={a.id}
+              className="group relative"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 + i * 0.07, duration: 0.4 }}
+            >
+              <div className="w-10 h-10 rounded-lg overflow-hidden opacity-55 group-hover:opacity-100 transition-opacity duration-200 ring-1 ring-white/10 group-hover:ring-white/30">
+                <Image
+                  src={a.avatar}
+                  alt={a.label}
+                  width={40}
+                  height={40}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+              {/* Tooltip */}
+              <div
+                className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 whitespace-nowrap rounded px-2 py-0.5 font-mono text-[9px] opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+                style={{ backgroundColor: "rgba(0,0,0,0.7)", color: "rgba(255,255,255,0.8)" }}
+              >
+                {a.label}
+              </div>
+            </motion.div>
+          ))}
+          <span
+            className="ml-1 font-mono text-[10px] uppercase tracking-widest"
+            style={{ color: "rgba(255,255,255,0.18)" }}
+          >
+            five-role fleet
+          </span>
+        </motion.div>
       </div>
 
-      {/* ── Right column — Trading Mesh ── */}
-      <div className="hidden lg:flex absolute right-0 top-0 bottom-0 w-[50%] items-center justify-center px-6 xl:px-10">
+      {/* ── Right column — Dashboard mock ── */}
+      <div className="hidden lg:flex absolute right-0 top-0 bottom-0 w-[50%] items-center justify-center px-8 xl:px-12">
         <motion.div
-          initial={{ opacity: 0, scale: 0.92 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.4, ease }}
-          className="w-full py-10"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.5, ease }}
+          className="w-full"
         >
-          <TradingMesh3D />
+          <DashboardMock />
         </motion.div>
       </div>
 
