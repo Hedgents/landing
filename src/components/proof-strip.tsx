@@ -45,7 +45,7 @@ export function ProofStrip() {
           {/* Live APY — pulls from actual rates */}
           <div className="flex flex-col gap-0.5">
             <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/50">
-              Blended APY · live
+              Current blended APY
             </span>
             <span className="font-serif text-xl font-bold" style={{ color: "var(--gold)" }}>
               {rates.portfolioAprPct.toFixed(2)}%
@@ -59,7 +59,7 @@ export function ProofStrip() {
               )}
             </span>
             <span className="text-[11px] text-muted-foreground/50">
-              mainnet rates · equal-weight
+              at current market rates · equal-weight
             </span>
           </div>
 

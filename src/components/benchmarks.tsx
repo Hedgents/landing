@@ -79,7 +79,7 @@ export function Benchmarks() {
             >
               <div className="flex items-center justify-end gap-2 mb-1">
                 <span className="font-mono text-[10px] uppercase tracking-widest opacity-50">
-                  Hedgents portfolio blend
+                  Hedgents portfolio · current rates
                 </span>
                 {live && (
                   <span className="relative flex h-1.5 w-1.5">
