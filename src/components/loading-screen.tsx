@@ -30,18 +30,12 @@ export function LoadingScreen() {
   const [shouldShow, setShouldShow] = useState(true);
 
   const handleExit = useCallback(() => {
-    sessionStorage.setItem("hedgents-loaded", "1");
     setExiting(true);
     setTimeout(() => setShouldShow(false), FADE_DURATION);
   }, []);
 
   useEffect(() => {
     if (!shouldShow) return;
-
-    if (sessionStorage.getItem("hedgents-loaded") === "1") {
-      const hide = setTimeout(() => setShouldShow(false), 0);
-      return () => clearTimeout(hide);
-    }
 
     const timers: NodeJS.Timeout[] = [];
     BOOT_LINES.forEach((line, i) => {
