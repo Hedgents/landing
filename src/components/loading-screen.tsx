@@ -27,10 +27,7 @@ export function LoadingScreen() {
   const [visibleLines, setVisibleLines] = useState<number[]>([]);
   const [progress, setProgress] = useState(0);
   const [exiting, setExiting] = useState(false);
-  const [shouldShow, setShouldShow] = useState(() => {
-    if (typeof window === "undefined") return true;
-    return sessionStorage.getItem("hedgents-loaded") !== "1";
-  });
+  const [shouldShow, setShouldShow] = useState(true);
 
   const handleExit = useCallback(() => {
     sessionStorage.setItem("hedgents-loaded", "1");
@@ -40,6 +37,11 @@ export function LoadingScreen() {
 
   useEffect(() => {
     if (!shouldShow) return;
+
+    if (sessionStorage.getItem("hedgents-loaded") === "1") {
+      const hide = setTimeout(() => setShouldShow(false), 0);
+      return () => clearTimeout(hide);
+    }
 
     const timers: NodeJS.Timeout[] = [];
     BOOT_LINES.forEach((line, i) => {
