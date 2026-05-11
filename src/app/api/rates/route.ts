@@ -73,10 +73,12 @@ async function fetchJlpFeeApy(): Promise<number> {
     next: { revalidate: 120 },
   });
   if (!res.ok) throw new Error(`DeFiLlama ${res.status}`);
-  const data = await res.json() as { data: { apy: number; apyBase: number }[] };
+  const data = await res.json() as { data: { apy: number; apyBase: number; apyBase7d?: number }[] };
   const last = data.data.at(-1);
   if (!last) throw new Error("DeFiLlama: empty data");
-  return last.apy > 0 ? last.apy : last.apyBase;
+  // Prefer the 7-day rolling average to smooth out short-term volume spikes.
+  if (last.apyBase7d && last.apyBase7d > 0) return last.apyBase7d;
+  return last.apyBase > 0 ? last.apyBase : last.apy;
 }
 
 export async function GET() {
