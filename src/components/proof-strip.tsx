@@ -1,6 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { AnimatedPercent } from "@/components/animated-number";
 import { useLiveRates } from "@/hooks/useLiveRates";
 
 const ease = [0.25, 0.1, 0.25, 1.0] as const;
@@ -29,10 +31,13 @@ const CREDENTIALS = [
 ];
 
 export function ProofStrip() {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
   const { rates, live } = useLiveRates();
 
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
@@ -48,7 +53,7 @@ export function ProofStrip() {
               Current blended APY
             </span>
             <span className="font-serif text-xl font-bold" style={{ color: "var(--gold)" }}>
-              {rates.portfolioAprPct.toFixed(2)}%
+              <AnimatedPercent value={rates.portfolioAprPct} active={inView} />
               {live && (
                 <span className="inline-flex items-center ml-2 align-middle">
                   <span className="relative flex h-1.5 w-1.5">

@@ -27,6 +27,70 @@ const SIGNING = [
 
 const MSG_TYPES = ["Assign", "Approve", "Report", "Escalate", "MarketSignal", "Beacon"];
 
+const zoneCardVariants = {
+  hidden: { opacity: 0, y: 14, filter: "blur(3px)" },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.45, delay: 0.18 + i * 0.08, ease },
+  }),
+};
+
+function MeshPacketColumn() {
+  return (
+    <div className="relative flex h-full w-16 sm:w-24 items-center justify-center overflow-hidden border-x border-border/30">
+      <svg aria-hidden="true" viewBox="0 0 96 260" className="absolute inset-0 h-full w-full" fill="none">
+        <defs>
+          <linearGradient id="arch-packet-line" x1="48" y1="18" x2="48" y2="242">
+            <stop stopColor="#C9A84C" stopOpacity="0" />
+            <stop offset="0.5" stopColor="#C9A84C" stopOpacity="0.45" />
+            <stop offset="1" stopColor="#7BA3C8" stopOpacity="0" />
+          </linearGradient>
+          <path id="arch-packet-path-a" d="M16 36C56 72 56 100 28 130C4 156 20 202 76 224" />
+          <path id="arch-packet-path-b" d="M80 38C36 70 38 105 68 132C92 154 78 197 22 226" />
+        </defs>
+        <path d="M48 18V242" stroke="url(#arch-packet-line)" strokeWidth="1" />
+        <use href="#arch-packet-path-a" stroke="rgba(201,168,76,0.18)" strokeDasharray="5 9" />
+        <use href="#arch-packet-path-b" stroke="rgba(123,163,200,0.14)" strokeDasharray="5 9" />
+        <circle r="3.5" fill="#C9A84C" opacity="0.78">
+          <animateMotion dur="3.8s" repeatCount="indefinite">
+            <mpath href="#arch-packet-path-a" />
+          </animateMotion>
+        </circle>
+        <circle r="3" fill="#7BA3C8" opacity="0.52">
+          <animateMotion dur="4.4s" begin="0.9s" repeatCount="indefinite">
+            <mpath href="#arch-packet-path-b" />
+          </animateMotion>
+        </circle>
+      </svg>
+
+      <div className="relative z-10 flex flex-col items-center justify-center gap-3">
+        {[0, 1, 2, 3, 4].map((i) => (
+          <motion.div
+            key={i}
+            className="flex items-center gap-1 text-border/60"
+            animate={{ opacity: [0.28, 0.86, 0.28], scale: [1, 1.06, 1] }}
+            transition={{
+              duration: 2,
+              delay: i * 0.35,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            <div className="h-px w-3 sm:w-6" style={{ backgroundColor: "var(--gold)", opacity: 0.4 }} />
+            <div
+              className="h-1 w-1 rounded-full"
+              style={{ backgroundColor: "var(--gold)", opacity: 0.6 }}
+            />
+            <div className="h-px w-3 sm:w-6" style={{ backgroundColor: "var(--gold)", opacity: 0.4 }} />
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function Architecture() {
   return (
     <section id="architecture" className="relative min-h-screen snap-start scroll-mt-12 border-t border-border/40 flex flex-col justify-center">
@@ -75,10 +139,15 @@ export function Architecture() {
           <div className="grid grid-cols-[1fr_auto_1fr] min-h-[260px]">
             {/* Read-only daemons */}
             <div className="p-5 flex flex-col justify-center gap-4">
-              {READ_ONLY.map((d) => (
-                <div
+              {READ_ONLY.map((d, i) => (
+                <motion.div
                   key={d.name}
-                  className="border border-border/50 rounded p-4 bg-background"
+                  custom={i}
+                  variants={zoneCardVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  className="border border-border/50 rounded p-4 bg-background transition-colors hover:border-foreground/20"
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <span
@@ -92,46 +161,37 @@ export function Architecture() {
                   </div>
                   <p className="text-xs text-muted-foreground/70 mb-2">{d.role}</p>
                   <div className="flex flex-wrap gap-1">
-                    {d.emits.map((e) => (
-                      <span key={e} className="font-mono text-[9px] text-muted-foreground/50 border border-border/30 rounded px-1.5 py-0.5">
+                    {d.emits.map((e, j) => (
+                      <motion.span
+                        key={e}
+                        initial={{ opacity: 0, y: 4 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.28, delay: 0.34 + i * 0.08 + j * 0.04, ease }}
+                        className="font-mono text-[9px] text-muted-foreground/50 border border-border/30 rounded px-1.5 py-0.5"
+                      >
                         {e}
-                      </span>
+                      </motion.span>
                     ))}
                   </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Center connector */}
-            <div className="w-16 sm:w-24 border-x border-border/30 flex flex-col items-center justify-center gap-3">
-              {[0, 1, 2, 3, 4].map((i) => (
-                <motion.div
-                  key={i}
-                  className="flex items-center gap-1 text-border/60"
-                  animate={{ opacity: [0.3, 0.8, 0.3] }}
-                  transition={{
-                    duration: 2,
-                    delay: i * 0.35,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                >
-                  <div className="h-px w-3 sm:w-6" style={{ backgroundColor: "var(--gold)", opacity: 0.4 }} />
-                  <div
-                    className="w-1 h-1 rounded-full"
-                    style={{ backgroundColor: "var(--gold)", opacity: 0.6 }}
-                  />
-                  <div className="h-px w-3 sm:w-6" style={{ backgroundColor: "var(--gold)", opacity: 0.4 }} />
                 </motion.div>
               ))}
             </div>
 
+            {/* Center connector */}
+            <MeshPacketColumn />
+
             {/* Signing daemons */}
             <div className="p-5 flex flex-col justify-center gap-4">
-              {SIGNING.map((d) => (
-                <div
+              {SIGNING.map((d, i) => (
+                <motion.div
                   key={d.name}
-                  className="border rounded p-4 bg-background"
+                  custom={i + READ_ONLY.length}
+                  variants={zoneCardVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  className="border rounded p-4 bg-background transition-colors hover:bg-card"
                   style={{
                     borderColor: "color-mix(in oklch, var(--gold) 30%, var(--border))",
                   }}
@@ -153,7 +213,7 @@ export function Architecture() {
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground/70">{d.venue}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -164,12 +224,16 @@ export function Architecture() {
               Envelope types:
             </span>
             {MSG_TYPES.map((t) => (
-              <span
+              <motion.span
                 key={t}
+                initial={{ opacity: 0, y: 4 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.28, delay: 0.18 + MSG_TYPES.indexOf(t) * 0.04, ease }}
                 className="font-mono text-[10px] text-muted-foreground/60 border border-border/30 rounded px-2 py-0.5"
               >
                 {t}
-              </span>
+              </motion.span>
             ))}
             <span className="ml-auto font-mono text-[9px] text-muted-foreground/35">
               Ed25519 signed · monotonic nonces · CBOR

@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { AnimatedPercent } from "@/components/animated-number";
 import { useLiveRates } from "@/hooks/useLiveRates";
 
 const ease = [0.25, 0.1, 0.25, 1.0] as const;
@@ -89,7 +90,7 @@ export function Benchmarks() {
                 )}
               </div>
               <div className="text-3xl font-bold tabular-nums" style={{ color: "var(--gold)" }}>
-                {rates.portfolioAprPct.toFixed(2)}%
+                <AnimatedPercent value={rates.portfolioAprPct} active={inView} />
               </div>
               <div className="text-[10px] opacity-50 mt-0.5">
                 {live ? "live · mainnet rates" : "1.5–2× the institutional floor"}
@@ -125,7 +126,9 @@ export function Benchmarks() {
                       <div className="text-[10px] opacity-35">{row.note}</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-semibold tabular-nums text-sm opacity-60">{row.apy.toFixed(2)}%</div>
+                      <div className="font-semibold tabular-nums text-sm opacity-60">
+                        <AnimatedPercent value={row.apy} active={inView} />
+                      </div>
                       <div className="text-[9px] opacity-35">{row.custodian}</div>
                     </div>
                   </motion.div>
@@ -180,7 +183,7 @@ export function Benchmarks() {
                         className="text-lg font-bold tabular-nums"
                         style={row.highlight ? { color: "var(--gold)" } : {}}
                       >
-                        {row.apy.toFixed(2)}%
+                        <AnimatedPercent value={row.apy} active={inView} />
                       </div>
                       <div className="text-[9px] opacity-35">APR</div>
                     </div>

@@ -65,6 +65,17 @@ const STATUS_COLOR: Record<string, string> = {
   "active":        "oklch(0.60 0.06 262)",
 };
 
+const cardVariants = {
+  hidden: { opacity: 0, y: -22, scale: 0.96, filter: "blur(4px)" },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: { duration: 0.5, delay: 0.16 + i * 0.08, ease },
+  }),
+};
+
 export function Fleet() {
   return (
     <section
@@ -108,12 +119,28 @@ export function Fleet() {
           {DAEMONS.map((d, i) => (
             <motion.div
               key={d.id}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              custom={i}
+              variants={cardVariants}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
-              transition={{ duration: 0.45, delay: 0.06 * i, ease }}
+              whileHover={{
+                y: -6,
+                boxShadow: d.signs
+                  ? "0 22px 45px rgba(201,168,76,0.16)"
+                  : "0 22px 45px rgba(123,163,200,0.12)",
+              }}
+              transition={{ duration: 0.25, ease }}
               className="group relative flex flex-col rounded-xl border border-border/50 bg-card hover:border-border/80 transition-colors overflow-hidden"
             >
+              <div
+                className="pointer-events-none absolute inset-x-0 top-0 h-px opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                style={{
+                  background: d.signs
+                    ? "linear-gradient(90deg, transparent, var(--gold), transparent)"
+                    : "linear-gradient(90deg, transparent, #7BA3C8, transparent)",
+                }}
+              />
               {/* Avatar */}
               <div className="relative aspect-square w-full overflow-hidden bg-[#0d0d1a]">
                 <Image
@@ -122,6 +149,9 @@ export function Fleet() {
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 translate-y-[-110%] bg-gradient-to-b from-transparent via-white/10 to-transparent opacity-0 transition-all duration-700 group-hover:translate-y-[110%] group-hover:opacity-100"
                 />
                 {/* Auth badge overlaid on image */}
                 <div className="absolute top-2 right-2">
@@ -151,7 +181,10 @@ export function Fleet() {
                 <div className="flex items-center gap-1.5">
                   <span
                     className="w-1.5 h-1.5 rounded-full shrink-0"
-                    style={{ backgroundColor: STATUS_COLOR[d.status] }}
+                    style={{
+                      backgroundColor: STATUS_COLOR[d.status],
+                      boxShadow: d.signs ? "0 0 10px color-mix(in oklch, var(--gold) 55%, transparent)" : "none",
+                    }}
                   />
                   <span className="font-mono text-[10px] text-muted-foreground/50 truncate">
                     {d.name}

@@ -7,9 +7,35 @@ export function FleetRoleRail() {
           <stop offset="0.5" stopColor="#C9A84C" stopOpacity="0.54" />
           <stop offset="1" stopColor="#7BA3C8" stopOpacity="0.2" />
         </linearGradient>
+        <filter id="fleet-glow" x="-20%" y="-120%" width="140%" height="340%">
+          <feGaussianBlur stdDeviation="5" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <path id="fleet-wave-path" d="M232 62C320 10 414 10 502 62C590 114 684 114 772 62C840 22 928 22 1010 62" />
       </defs>
-      <path d="M42 62H1078" stroke="url(#fleet-rail)" strokeWidth="1.5" />
-      <path d="M232 62C320 10 414 10 502 62C590 114 684 114 772 62C840 22 928 22 1010 62" stroke="rgba(36,50,101,0.18)" strokeDasharray="7 10" />
+      <path d="M42 62H1078" stroke="rgba(36,50,101,0.12)" strokeWidth="1.5" />
+      <path
+        d="M42 62H1078"
+        stroke="url(#fleet-rail)"
+        strokeWidth="1.5"
+        strokeDasharray="1036"
+        strokeDashoffset="1036"
+      >
+        <animate attributeName="stroke-dashoffset" from="1036" to="0" dur="1.4s" begin="0.15s" fill="freeze" />
+      </path>
+      <use href="#fleet-wave-path" stroke="rgba(36,50,101,0.18)" strokeDasharray="7 10" />
+      <use href="#fleet-wave-path" stroke="#C9A84C" strokeOpacity="0.22" strokeWidth="1.2" strokeDasharray="36 260" filter="url(#fleet-glow)">
+        <animate attributeName="stroke-dashoffset" values="300;0;-300" dur="5.5s" repeatCount="indefinite" />
+      </use>
+      <circle r="4" fill="#C9A84C" opacity="0.78" filter="url(#fleet-glow)">
+        <animateMotion dur="5.4s" repeatCount="indefinite" path="M118 62H1002" />
+      </circle>
+      <circle r="3" fill="#7BA3C8" opacity="0.48">
+        <animateMotion dur="6.8s" begin="1.1s" repeatCount="indefinite" path="M1002 62H118" />
+      </circle>
       {[
         [118, "MULTIPLY", "signing"],
         [340, "STABLE", "signing"],
@@ -18,6 +44,10 @@ export function FleetRoleRail() {
         [1002, "SIGNAL", "read-only"],
       ].map(([x, title, sub], i) => (
         <g key={title as string}>
+          <circle cx={x as number} cy="62" r="34" fill={i < 3 ? "#C9A84C" : "#7BA3C8"} opacity="0.03">
+            <animate attributeName="r" values="25;38;25" dur={i < 3 ? "2.4s" : "3.2s"} begin={`${i * 0.18}s`} repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.12;0.02;0.12" dur={i < 3 ? "2.4s" : "3.2s"} begin={`${i * 0.18}s`} repeatCount="indefinite" />
+          </circle>
           <circle cx={x as number} cy="62" r="15" fill={i < 3 ? "#C9A84C" : "#7BA3C8"} opacity={i < 3 ? "0.82" : "0.48"} />
           <circle cx={x as number} cy="62" r="27" stroke={i < 3 ? "#C9A84C" : "#7BA3C8"} opacity="0.18" />
           <text
