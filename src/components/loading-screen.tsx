@@ -20,22 +20,24 @@ const BOOT_LINES = [
   { text: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", color: "#52525b", delay: 3100 },
 ];
 
-const TOTAL_DURATION = 3800; // ms before fade out starts
+const TOTAL_DURATION = 2200; // ms before fade out starts
 const FADE_DURATION = 800; // ms for the fade out — sync with PageEntrance
 
 export function LoadingScreen() {
   const [visibleLines, setVisibleLines] = useState<number[]>([]);
   const [progress, setProgress] = useState(0);
   const [exiting, setExiting] = useState(false);
-  const [shouldShow, setShouldShow] = useState(false);
+  const [shouldShow, setShouldShow] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return sessionStorage.getItem("hedgents-loaded") !== "1";
+  });
 
-  // Clear any previous flag on mount so refresh always triggers the screen
-  useEffect(() => {
-    sessionStorage.removeItem("hedgents-loaded");
-    setShouldShow(true);
+  const handleExit = useCallback(() => {
+    sessionStorage.setItem("hedgents-loaded", "1");
+    setExiting(true);
+    setTimeout(() => setShouldShow(false), FADE_DURATION);
   }, []);
 
-  // Animate boot lines
   useEffect(() => {
     if (!shouldShow) return;
 
@@ -46,12 +48,6 @@ export function LoadingScreen() {
       }, line.delay);
       timers.push(t);
     });
-    return () => timers.forEach(clearTimeout);
-  }, [shouldShow]);
-
-  // Progress bar: 0→100% over TOTAL_DURATION
-  useEffect(() => {
-    if (!shouldShow) return;
 
     const start = Date.now();
     const interval = setInterval(() => {
@@ -60,20 +56,12 @@ export function LoadingScreen() {
       setProgress(pct);
     }, 40);
 
-    return () => clearInterval(interval);
-  }, [shouldShow]);
-
-  // Trigger exit
-  const handleExit = useCallback(() => {
-    setExiting(true);
-    sessionStorage.setItem("hedgents-loaded", "1");
-    setTimeout(() => setShouldShow(false), FADE_DURATION);
-  }, []);
-
-  useEffect(() => {
-    if (!shouldShow) return;
     const t = setTimeout(handleExit, TOTAL_DURATION);
-    return () => clearTimeout(t);
+    return () => {
+      timers.forEach(clearTimeout);
+      clearInterval(interval);
+      clearTimeout(t);
+    };
   }, [shouldShow, handleExit]);
 
   if (!shouldShow) return null;
@@ -162,6 +150,14 @@ export function LoadingScreen() {
                 your hardware. your keys.
               </motion.p>
             )}
+
+            <button
+              type="button"
+              onClick={handleExit}
+              className="mt-4 w-full text-center font-mono text-[10px] uppercase tracking-widest text-zinc-600 transition-colors hover:text-zinc-300"
+            >
+              Skip boot
+            </button>
           </div>
         </motion.div>
       )}

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { FleetRoleRail } from "@/components/svg-accents";
 
 const ease = [0.25, 0.1, 0.25, 1.0] as const;
 
@@ -90,6 +91,16 @@ export function Fleet() {
             Three manage positions and sign transactions. Two monitor and publish signals —
             they have no authority to move funds, by design.
           </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.08, ease }}
+          className="-mt-3 mb-2"
+        >
+          <FleetRoleRail />
         </motion.div>
 
         {/* Agent cards */}

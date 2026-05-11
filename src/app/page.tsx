@@ -4,7 +4,6 @@ import { ProofStrip } from "@/components/proof-strip";
 import { Fleet } from "@/components/fleet";
 import { Differentiators } from "@/components/differentiators";
 import { Benchmarks } from "@/components/benchmarks";
-import { InlineCTA } from "@/components/inline-cta";
 import { Architecture } from "@/components/architecture";
 import { FAQ } from "@/components/faq";
 import { CTA } from "@/components/cta";
@@ -19,7 +18,6 @@ export default function Home() {
         <Fleet />
         <Differentiators />
         <Benchmarks />
-        <InlineCTA />
         <Architecture />
         <FAQ />
       </div>
