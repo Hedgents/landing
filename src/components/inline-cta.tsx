@@ -23,7 +23,7 @@ export function InlineCTA() {
           </p>
         </div>
         <a
-          href="mailto:contact@infinityteam.io"
+          href="mailto:contact@hedgents.com"
           className="shrink-0 inline-flex items-center justify-center rounded px-6 py-2.5 font-mono text-sm font-semibold transition-opacity hover:opacity-80"
           style={{ backgroundColor: "var(--gold)", color: "var(--navy)" }}
         >

@@ -40,7 +40,7 @@ export function CTA() {
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a
-              href="mailto:contact@infinityteam.io"
+              href="mailto:contact@hedgents.com"
               className="inline-flex items-center justify-center rounded px-8 py-3 font-mono text-sm font-semibold transition-opacity hover:opacity-85"
               style={{ backgroundColor: "var(--gold)", color: "var(--navy)" }}
             >

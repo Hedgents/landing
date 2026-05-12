@@ -70,7 +70,7 @@ export function Navbar() {
             GitHub
           </a>
           <a
-            href="mailto:contact@infinityteam.io"
+            href="mailto:contact@hedgents.com"
             className="inline-flex items-center justify-center rounded px-3 py-1 font-mono text-xs font-semibold transition-opacity hover:opacity-80"
             style={{ backgroundColor: "var(--gold)", color: "var(--navy)" }}
           >

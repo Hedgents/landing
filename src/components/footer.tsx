@@ -30,13 +30,13 @@ export function Footer() {
 
           <div className="flex flex-wrap gap-6 text-xs text-muted-foreground">
             <motion.a
-              href="mailto:contact@infinityteam.io"
+              href="mailto:contact@hedgents.com"
               className="hover:text-foreground transition-colors font-mono"
               variants={linkVariants}
               initial="rest"
               whileHover="hover"
             >
-              contact@infinityteam.io
+              contact@hedgents.com
             </motion.a>
             <motion.a
               href="https://github.com/Hedgents/fleet"
