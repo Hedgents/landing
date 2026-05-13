@@ -115,8 +115,12 @@ export async function GET() {
       },
     });
   } catch (err) {
+    // Log the real error server-side; return a generic message to the
+    // client. Reqwest / fetch error strings can leak internal host names
+    // or DNS failure detail that aren't useful to the caller.
+    console.error("rates upstream failed", err);
     return NextResponse.json(
-      { ok: false, error: String(err) },
+      { ok: false, error: "upstream rate source failed" },
       { status: 502 }
     );
   }
