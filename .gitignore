@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Stray daemon state (zerox1 enterprise node epoch CBOR) that lands here
+# accidentally during local dev; never check in.
+zerox1-epoch-*.cbor

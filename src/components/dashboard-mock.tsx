@@ -125,7 +125,7 @@ export function DashboardMock() {
               </span>
             )}
             <span className="font-mono text-[9px] px-2 py-0.5 rounded" style={{ backgroundColor: "rgba(201,168,76,0.12)", color: "#C9A84C" }}>
-              5 agents active
+              6 agents active
             </span>
           </div>
         </div>

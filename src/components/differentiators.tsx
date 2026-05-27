@@ -20,7 +20,7 @@ const PILLARS = [
     number: "02",
     label: "Network-Level",
     title: "Multi-machine P2P mesh.",
-    body: "Each daemon is an independent libp2p peer. Each role can run on a separate VPC. No orchestrator holds custody — the institution holds the keys.",
+    body: "Each daemon is an independent libp2p peer. Each role can run on a separate VPC. The allocator routes envelopes between peers but holds no Solana keys — custody stays with each signing daemon, each in its own compile-time-isolated binary.",
     detail: "Long-lived Ed25519 role key per daemon. Ephemeral peer-id survives host migration.",
     compare: null,
   },
@@ -29,7 +29,7 @@ const PILLARS = [
     label: "Protocol-Level",
     title: "Signed envelopes, replay-protected.",
     body: "Every message is a signed CBOR envelope with monotonic per-sender nonces. Verifiable at audit time — not on trust.",
-    detail: "Assign · Approve · Report · Escalate · MarketSignal · Beacon",
+    detail: "Assign · Withdraw · Approve · Report · Escalate · MarketSignal · Beacon",
     compare: null,
   },
 ];

@@ -4,18 +4,29 @@ import { motion } from "framer-motion";
 
 const ease = [0.25, 0.1, 0.25, 1.0] as const;
 
-const READ_ONLY = [
+// "No-custody zone" — daemons with no Solana keys. The wallet crate
+// is intentionally absent from each binary's dependency graph;
+// compile-time guarantee that none of these can move funds. Some
+// emit mesh envelopes (orchestrator routes Assigns); some are
+// observer-only (researcher, riskwatcher).
+const NO_CUSTODY = [
   {
     name: "researcher-daemon",
     role: "Signal Publisher",
     emits: ["Kamino rates", "Pyth prices", "JLP yield", "peg drift"],
-    signs: false,
+    badge: "READ",
   },
   {
     name: "riskwatcher-daemon",
     role: "Risk Officer",
     emits: ["EscalateRisk(Critical)", "LiquidationDistance"],
-    signs: false,
+    badge: "READ",
+  },
+  {
+    name: "orchestrator-daemon",
+    role: "Allocator (v0.4.0+)",
+    emits: ["Assign", "Withdraw", "Approve"],
+    badge: "ROUTES",
   },
 ];
 
@@ -25,7 +36,7 @@ const SIGNING = [
   { name: "hedgedjlp-daemon",    venue: "JLP + Jupiter Perps" },
 ];
 
-const MSG_TYPES = ["Assign", "Approve", "Report", "Escalate", "MarketSignal", "Beacon"];
+const MSG_TYPES = ["Assign", "Withdraw", "Approve", "Report", "Escalate", "MarketSignal", "Beacon"];
 
 const zoneCardVariants = {
   hidden: { opacity: 0, y: 14, filter: "blur(3px)" },
@@ -110,8 +121,10 @@ export function Architecture() {
             Peer-to-peer mesh. No central server.
           </h2>
           <p className="mt-4 text-muted-foreground leading-relaxed">
-            Five independent libp2p peers. Each role can run on a separate VPC.
-            Every message is a signed CBOR envelope. No orchestrator holds custody.
+            Six independent libp2p peers. Each role can run on a separate VPC.
+            Every message is a signed CBOR envelope. The allocator orchestrates
+            the others but holds no Solana keys — custody stays with each
+            signing daemon, each in its own dependency-isolated binary.
           </p>
         </motion.div>
 
@@ -125,7 +138,7 @@ export function Architecture() {
           {/* Zone headers */}
           <div className="grid grid-cols-[1fr_auto_1fr] border-b border-border/40 bg-muted/30">
             <div className="px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/60">
-              Read-Only Zone
+              No-Custody Zone
             </div>
             <div className="px-4 py-3 border-x border-border/30 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/30 text-center">
               libp2p mesh
@@ -137,9 +150,9 @@ export function Architecture() {
 
           {/* Mesh diagram */}
           <div className="grid grid-cols-[1fr_auto_1fr] min-h-[260px]">
-            {/* Read-only daemons */}
+            {/* No-custody daemons (read-only + orchestrator) */}
             <div className="p-5 flex flex-col justify-center gap-4">
-              {READ_ONLY.map((d, i) => (
+              {NO_CUSTODY.map((d, i) => (
                 <motion.div
                   key={d.name}
                   custom={i}
@@ -152,11 +165,34 @@ export function Architecture() {
                   <div className="flex items-center gap-2 mb-2">
                     <span
                       className="w-1.5 h-1.5 rounded-full"
-                      style={{ backgroundColor: "oklch(0.60 0.06 262)" }}
+                      style={{
+                        // Orchestrator gets a slightly brighter dot —
+                        // it's "active" in the routing sense, while
+                        // researcher/riskwatcher are pure observers.
+                        backgroundColor:
+                          d.badge === "ROUTES"
+                            ? "#7BA3C8"
+                            : "oklch(0.60 0.06 262)",
+                      }}
                     />
                     <code className="font-mono text-[11px] text-foreground/80">{d.name}</code>
-                    <span className="ml-auto font-mono text-[9px] px-1.5 py-0.5 rounded border border-border/50 text-muted-foreground/50 uppercase">
-                      read
+                    <span
+                      className="ml-auto font-mono text-[9px] px-1.5 py-0.5 rounded border uppercase"
+                      style={
+                        d.badge === "ROUTES"
+                          ? {
+                              borderColor: "color-mix(in oklch, #7BA3C8 45%, transparent)",
+                              color: "#A8C4DD",
+                              backgroundColor: "color-mix(in oklch, #7BA3C8 10%, transparent)",
+                            }
+                          : {
+                              borderColor: "color-mix(in oklch, var(--border) 100%, transparent)",
+                              color: "color-mix(in oklch, var(--muted-foreground) 70%, transparent)",
+                              backgroundColor: "transparent",
+                            }
+                      }
+                    >
+                      {d.badge}
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground/70 mb-2">{d.role}</p>
@@ -186,7 +222,7 @@ export function Architecture() {
               {SIGNING.map((d, i) => (
                 <motion.div
                   key={d.name}
-                  custom={i + READ_ONLY.length}
+                  custom={i + NO_CUSTODY.length}
                   variants={zoneCardVariants}
                   initial="hidden"
                   whileInView="visible"

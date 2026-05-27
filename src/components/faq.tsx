@@ -8,7 +8,7 @@ const appleEase = [0.25, 0.1, 0.25, 1.0] as const;
 const FAQS = [
   {
     q: "What is Hedgents?",
-    a: "Hedgents is a self-hosted treasury management system for institutions. You install it on your own servers. It runs five specialized agents that execute yield strategies on Solana — currently leveraged staking, USDC lending, and a delta-neutral position on Jupiter's liquidity pool. You stay in full control of your capital at all times.",
+    a: "Hedgents is a self-hosted treasury management system for institutions. You install it on your own servers. It runs six specialized agents — three that execute yield strategies (leveraged staking, USDC lending, delta-neutral JLP), two that observe and emit risk/market signals, and an allocator that orchestrates capital between them. You stay in full control of your capital at all times.",
   },
   {
     q: "Who is this for?",
@@ -20,11 +20,11 @@ const FAQS = [
   },
   {
     q: "What if one of the agents is compromised?",
-    a: "The two monitoring agents — the risk officer and the signal publisher — are architecturally prevented from moving funds. They have no signing authority. For the three trading agents, a dedicated risk monitor watches every position and can pause trading if limits are breached. No single agent has unchecked authority.",
+    a: "The three no-custody agents — risk officer, signal publisher, and allocator — are architecturally prevented from moving funds. The wallet crate is intentionally absent from their dependency graph; the binary cannot sign a Solana tx. For the three trading agents, a dedicated risk monitor watches every position and can pause trading if limits are breached. No single agent has unchecked authority.",
   },
   {
     q: "How is this different from a trading bot?",
-    a: "A trading bot is a single process with a single set of keys. Hedgents separates execution, risk management, and market research into five independent agents with distinct roles. The risk agent can block a trade but cannot initiate one. The trading agents cannot change their own risk parameters. That separation is what makes it auditable.",
+    a: "A trading bot is a single process with a single set of keys. Hedgents separates execution, risk management, market research, and capital allocation into six independent agents with distinct roles. The risk agent can block a trade but cannot initiate one. The trading agents cannot change their own risk parameters. The allocator can decide WHICH strategy gets capital but has no signing keys to move it. That separation is what makes it auditable.",
   },
   {
     q: "Is this ready for live capital?",

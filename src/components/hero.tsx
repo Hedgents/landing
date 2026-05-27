@@ -6,11 +6,12 @@ import { DashboardMock } from "@/components/dashboard-mock";
 import { useLiveRates } from "@/hooks/useLiveRates";
 
 const AGENTS = [
-  { id: "multiply",     label: "Multiply",     avatar: "/avatar-multiply.png" },
-  { id: "stable-yield", label: "Stable Yield",  avatar: "/avatar-stable-yield.png" },
-  { id: "hedgedjlp",   label: "Hedged JLP",    avatar: "/avatar-hedgedjlp.png" },
-  { id: "riskwatcher", label: "Riskwatcher",   avatar: "/avatar-riskwatcher.png" },
-  { id: "researcher",  label: "Researcher",    avatar: "/avatar-researcher.png" },
+  { id: "multiply",      label: "Multiply",      avatar: "/avatar-multiply.png" },
+  { id: "stable-yield",  label: "Stable Yield",  avatar: "/avatar-stable-yield.png" },
+  { id: "hedgedjlp",     label: "Hedged JLP",    avatar: "/avatar-hedgedjlp.png" },
+  { id: "orchestrator",  label: "Orchestrator",  avatar: "/avatar-orchestrator.png" },
+  { id: "riskwatcher",   label: "Riskwatcher",   avatar: "/avatar-riskwatcher.png" },
+  { id: "researcher",    label: "Researcher",    avatar: "/avatar-researcher.png" },
 ];
 
 const ease = [0.25, 0.1, 0.25, 1.0] as const;
@@ -88,10 +89,11 @@ export function Hero() {
         >
           Unlike a single trading bot, it deploys a{" "}
           <span style={{ color: "rgba(255,255,255,0.75)" }}>
-            fleet of five specialized agents
+            fleet of six specialized agents
           </span>
           {" "}— each with one fixed role. The agent that monitors risk
           cannot trade. The agents that trade cannot change their own limits.
+          The allocator that orchestrates them holds no Solana keys.
           Currently paper-trading at{" "}
           <span style={{ color: "var(--gold)", fontWeight: 600 }}>
             {apy}% blended APY
@@ -171,7 +173,7 @@ export function Hero() {
             className="ml-1 font-mono text-[10px] uppercase tracking-widest"
             style={{ color: "rgba(255,255,255,0.18)" }}
           >
-            five-role fleet
+            six-role fleet
           </span>
         </motion.div>
       </div>
