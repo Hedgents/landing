@@ -36,44 +36,60 @@ export function FleetRoleRail() {
       <circle r="3" fill="#7BA3C8" opacity="0.48">
         <animateMotion dur="6.8s" begin="1.1s" repeatCount="indefinite" path="M1002 62H118" />
       </circle>
-      {[
-        [118, "MULTIPLY", "signing"],
-        [340, "STABLE", "signing"],
-        [560, "JLP", "signing"],
-        [780, "RISK", "read-only"],
-        [1002, "SIGNAL", "read-only"],
-      ].map(([x, title, sub], i) => (
-        <g key={title as string}>
-          <circle cx={x as number} cy="62" r="34" fill={i < 3 ? "#C9A84C" : "#7BA3C8"} opacity="0.03">
-            <animate attributeName="r" values="25;38;25" dur={i < 3 ? "2.4s" : "3.2s"} begin={`${i * 0.18}s`} repeatCount="indefinite" />
-            <animate attributeName="opacity" values="0.12;0.02;0.12" dur={i < 3 ? "2.4s" : "3.2s"} begin={`${i * 0.18}s`} repeatCount="indefinite" />
-          </circle>
-          <circle cx={x as number} cy="62" r="15" fill={i < 3 ? "#C9A84C" : "#7BA3C8"} opacity={i < 3 ? "0.82" : "0.48"} />
-          <circle cx={x as number} cy="62" r="27" stroke={i < 3 ? "#C9A84C" : "#7BA3C8"} opacity="0.18" />
-          <text
-            x={x as number}
-            y="28"
-            textAnchor="middle"
-            fontSize="10"
-            fontFamily="var(--font-geist-mono), monospace"
-            fill="rgba(36,50,101,0.72)"
-            letterSpacing="0"
-          >
-            {title}
-          </text>
-          <text
-            x={x as number}
-            y="103"
-            textAnchor="middle"
-            fontSize="9"
-            fontFamily="var(--font-geist-mono), monospace"
-            fill="rgba(36,50,101,0.38)"
-            letterSpacing="0"
-          >
-            {sub}
-          </text>
-        </g>
-      ))}
+      {(
+        [
+          // x — chosen so 6 nodes space evenly across the 42-1078 rail
+          // (118 → 1002 in equal steps of ~177).
+          // Three authority classes — gold/SIGNS, slate/ROUTES, blue/READ —
+          // mirror the fleet.tsx card-grid colour scheme.
+          [118, "MULTIPLY", "signing", "signs"],
+          [295, "STABLE", "signing", "signs"],
+          [472, "JLP", "signing", "signs"],
+          [649, "ALLOCATOR", "routes", "routes"],
+          [826, "RISK", "read-only", "read"],
+          [1002, "SIGNAL", "read-only", "read"],
+        ] as Array<[number, string, string, "signs" | "routes" | "read"]>
+      ).map(([x, title, sub, tier], i) => {
+        // Gold for the three Solana-tx signers, slate-blue for the
+        // single allocator (signs mesh envelopes only, can never sign a
+        // Solana tx — wallet crate compile-time absent), neutral blue
+        // for the two read-only observers.
+        const color = tier === "signs" ? "#C9A84C" : tier === "routes" ? "#7BA3C8" : "#7BA3C8";
+        const fillOpacity = tier === "signs" ? "0.82" : tier === "routes" ? "0.62" : "0.48";
+        const pulseDur = tier === "signs" ? "2.4s" : tier === "routes" ? "2.8s" : "3.2s";
+        return (
+          <g key={title}>
+            <circle cx={x} cy="62" r="34" fill={color} opacity="0.03">
+              <animate attributeName="r" values="25;38;25" dur={pulseDur} begin={`${i * 0.18}s`} repeatCount="indefinite" />
+              <animate attributeName="opacity" values="0.12;0.02;0.12" dur={pulseDur} begin={`${i * 0.18}s`} repeatCount="indefinite" />
+            </circle>
+            <circle cx={x} cy="62" r="15" fill={color} opacity={fillOpacity} />
+            <circle cx={x} cy="62" r="27" stroke={color} opacity="0.18" />
+            <text
+              x={x}
+              y="28"
+              textAnchor="middle"
+              fontSize="10"
+              fontFamily="var(--font-geist-mono), monospace"
+              fill="rgba(36,50,101,0.72)"
+              letterSpacing="0"
+            >
+              {title}
+            </text>
+            <text
+              x={x}
+              y="103"
+              textAnchor="middle"
+              fontSize="9"
+              fontFamily="var(--font-geist-mono), monospace"
+              fill="rgba(36,50,101,0.38)"
+              letterSpacing="0"
+            >
+              {sub}
+            </text>
+          </g>
+        );
+      })}
     </svg>
   );
 }
