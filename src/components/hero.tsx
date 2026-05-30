@@ -1,8 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { DashboardMock } from "@/components/dashboard-mock";
+import { VaultInviteModal } from "@/components/vault-invite-modal";
 import { useLiveRates } from "@/hooks/useLiveRates";
 
 const AGENTS = [
@@ -25,6 +27,7 @@ const fade = (delay = 0) => ({
 export function Hero() {
   const { rates, live } = useLiveRates();
   const apy = rates.portfolioAprPct.toFixed(2);
+  const [vaultOpen, setVaultOpen] = useState(false);
 
   return (
     <section
@@ -115,12 +118,23 @@ export function Hero() {
           {...fade(0.48)}
           className="mt-10 flex flex-col sm:flex-row gap-3"
         >
-          <a
-            href="mailto:contact@hedgents.com"
+          <button
+            type="button"
+            onClick={() => setVaultOpen(true)}
             className="inline-flex items-center justify-center rounded px-6 py-2.5 font-mono text-sm font-semibold transition-opacity hover:opacity-80"
             style={{ backgroundColor: "var(--gold)", color: "var(--navy)" }}
           >
-            Request access →
+            Try the vault →
+          </button>
+          <a
+            href="mailto:contact@hedgents.com"
+            className="inline-flex items-center justify-center rounded border px-6 py-2.5 font-mono text-sm transition-colors hover:border-white/50 hover:text-white"
+            style={{
+              borderColor: "rgba(255,255,255,0.2)",
+              color: "rgba(255,255,255,0.6)",
+            }}
+          >
+            Talk to us →
           </a>
           <a
             href="https://github.com/Hedgents/fleet"
@@ -135,6 +149,7 @@ export function Hero() {
             View on GitHub →
           </a>
         </motion.div>
+        <VaultInviteModal open={vaultOpen} onClose={() => setVaultOpen(false)} />
 
         {/* Agent avatar strip */}
         <motion.div
