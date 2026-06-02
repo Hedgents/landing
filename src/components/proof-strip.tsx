@@ -9,9 +9,9 @@ const ease = [0.25, 0.1, 0.25, 1.0] as const;
 
 const CREDENTIALS = [
   {
-    label: "Live paper soak",
-    value: "7h+ running",
-    sub: "uninterrupted on mainnet",
+    label: "Live on mainnet",
+    value: "6 weeks",
+    sub: "v0.1.0 deployed April 22, 2026",
   },
   {
     label: "vs. BUIDL / FOBXX / USYC",
@@ -25,8 +25,8 @@ const CREDENTIALS = [
   },
   {
     label: "Custody model",
-    value: "zero transfer",
-    sub: "keys never leave your machines",
+    value: "self-deployed: zero transfer",
+    sub: "vault deposits are a tracked custody — see Risks",
   },
 ];
 
