@@ -6,6 +6,7 @@ import { Differentiators } from "@/components/differentiators";
 import { Benchmarks } from "@/components/benchmarks";
 import { Architecture } from "@/components/architecture";
 import { FAQ } from "@/components/faq";
+import { Risks } from "@/components/risks";
 import { CTA } from "@/components/cta";
 
 export default function Home() {
@@ -20,6 +21,7 @@ export default function Home() {
         <Benchmarks />
         <Architecture />
         <FAQ />
+        <Risks />
       </div>
       <CTA />
     </div>

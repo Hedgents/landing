@@ -54,7 +54,10 @@ export function Footer() {
 
         <div className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground font-mono">
-            Institutional preview · early access by request
+            Institutional preview · early access by request ·{" "}
+            <a href="#risks" className="hover:text-foreground transition-colors underline">
+              read the risks
+            </a>
           </p>
           <p className="text-xs text-muted-foreground font-mono">
             © {new Date().getFullYear()} Hedgents

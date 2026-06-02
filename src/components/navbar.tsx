@@ -11,6 +11,7 @@ const SECTIONS = [
   { id: "benchmarks",       label: "Benchmarks" },
   { id: "architecture",     label: "Architecture" },
   { id: "faq",              label: "FAQ" },
+  { id: "risks",            label: "Risks" },
 ];
 
 export function Navbar() {
