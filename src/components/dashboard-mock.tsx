@@ -58,7 +58,7 @@ function Sparkline({
 }
 
 const DAEMONS = [
-  { id: "mul", label: "multiply" },
+  { id: "onc", label: "onyc" },
   { id: "stb", label: "stable-yield" },
   { id: "jlp", label: "hedgedjlp" },
   { id: "rwt", label: "riskwatcher" },
@@ -70,12 +70,12 @@ export function DashboardMock() {
 
   const portfolioLine = useMemo(() => makeSparkline(rates.portfolioAprPct, 28), [rates.portfolioAprPct]);
   const stableLine    = useMemo(() => makeSparkline(rates.stableYieldAprPct, 16), [rates.stableYieldAprPct]);
-  const multiplyLine  = useMemo(() => makeSparkline(rates.multiplyAprPct, 16), [rates.multiplyAprPct]);
+  const onycLine      = useMemo(() => makeSparkline(rates.onycAprPct, 16), [rates.onycAprPct]);
   const hedgeLine     = useMemo(() => makeSparkline(rates.hedgedjlpAprPct, 16), [rates.hedgedjlpAprPct]);
 
   const strategies = [
     { label: "Stable Yield",  apy: rates.stableYieldAprPct, line: stableLine,   color: "#0ea5e9" },
-    { label: "Multiply",      apy: rates.multiplyAprPct,    line: multiplyLine,  color: "#C9A84C" },
+    { label: "ONyc",          apy: rates.onycAprPct,        line: onycLine,     color: "#C9A84C" },
     { label: "Hedged JLP",    apy: rates.hedgedjlpAprPct,   line: hedgeLine,     color: "#a78bfa" },
   ];
 

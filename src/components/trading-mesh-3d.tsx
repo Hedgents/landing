@@ -13,9 +13,9 @@ const STEEL = "#7BA3C8";
 
 const NODES = [
   {
-    id: "multiply",
-    label: "multiply",
-    role: "Kamino LST + leverage",
+    id: "onyc",
+    label: "onyc",
+    role: "Kamino isolated ONyc + USDC borrow",
     signs: true,
     position: [0, 0.6, 0] as [number, number, number],
     size: 0.45,
@@ -289,7 +289,7 @@ function Scene() {
 type MetricPair = [string, string];
 
 const BASE_METRICS: Record<string, MetricPair> = {
-  multiply:      ["APY 14.2%", "LTV 52%"],
+  onyc:          ["APY 11.0%", "LTV 36%"],
   "stable-yield":["APY 8.7%",  "util 91%"],
   hedgedjlp:     ["PnL +2.1%", "δ 0.03"],
   riskwatcher:   ["alerts 0",  "up 99.9%"],
@@ -297,7 +297,7 @@ const BASE_METRICS: Record<string, MetricPair> = {
 };
 
 const STATUS: Record<string, { label: string; color: string; pulse: boolean }> = {
-  multiply:      { label: "MAINNET", color: GOLD,    pulse: true },
+  onyc:          { label: "MAINNET", color: GOLD,    pulse: true },
   "stable-yield":{ label: "MAINNET", color: GOLD,    pulse: true },
   hedgedjlp:     { label: "SIM",     color: "#D4A843", pulse: false },
   riskwatcher:   { label: "INFRA",   color: STEEL,   pulse: false },

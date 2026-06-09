@@ -31,7 +31,7 @@ const NO_CUSTODY = [
 ];
 
 const SIGNING = [
-  { name: "multiply-daemon",     venue: "Kamino LST + leverage" },
+  { name: "onyc-daemon",         venue: "Kamino isolated ONyc + USDC borrow" },
   { name: "stable-yield-daemon", venue: "Kamino USDC supply" },
   { name: "hedgedjlp-daemon",    venue: "JLP + Jupiter Perps" },
 ];

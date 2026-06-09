@@ -4,18 +4,18 @@ import { useEffect, useState } from "react";
 
 export interface LiveRates {
   stableYieldAprPct: number;
-  multiplyAprPct: number;
+  onycAprPct: number;
   hedgedjlpAprPct: number;
   portfolioAprPct: number;
   fetchedAt: number;
 }
 
-// Fallbacks match current soak readings (May 2026).
+// Fallbacks match current soak readings (June 2026 — post-v0.5.0 ONyc).
 export const FALLBACK: LiveRates = {
   stableYieldAprPct: 4.00,
-  multiplyAprPct:    10.50,
+  onycAprPct:        11.00,
   hedgedjlpAprPct:   8.22,
-  portfolioAprPct:   7.57,
+  portfolioAprPct:   7.74,
   fetchedAt: 0,
 };
 

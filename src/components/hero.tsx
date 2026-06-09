@@ -8,7 +8,7 @@ import { VaultInviteModal } from "@/components/vault-invite-modal";
 import { useLiveRates } from "@/hooks/useLiveRates";
 
 const AGENTS = [
-  { id: "multiply",      label: "Multiply",      avatar: "/avatar-multiply.png" },
+  { id: "onyc",          label: "ONyc",          avatar: "/avatar-onyc.png" },
   { id: "stable-yield",  label: "Stable Yield",  avatar: "/avatar-stable-yield.png" },
   { id: "hedgedjlp",     label: "Hedged JLP",    avatar: "/avatar-hedgedjlp.png" },
   { id: "orchestrator",  label: "Orchestrator",  avatar: "/avatar-orchestrator.png" },

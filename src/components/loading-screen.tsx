@@ -10,7 +10,7 @@ const BOOT_LINES = [
   { text: "  loading Ed25519 role keys...", color: "#a1a1aa", delay: 700 },
   { text: "  verifying compile-time isolation...", color: "#a1a1aa", delay: 1000 },
   { text: "  spawning daemons:", color: "#a1a1aa", delay: 1300 },
-  { text: "    [ok] multiply-daemon", color: "#86efac", delay: 1600 },
+  { text: "    [ok] onyc-daemon", color: "#86efac", delay: 1600 },
   { text: "    [ok] stable-yield-daemon", color: "#86efac", delay: 1800 },
   { text: "    [ok] hedgedjlp-daemon", color: "#86efac", delay: 2000 },
   { text: "    [ok] riskwatcher-daemon (read-only)", color: "#86efac", delay: 2200 },

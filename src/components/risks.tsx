@@ -9,13 +9,13 @@ const RISKS = [
     number: "01",
     label: "Strategy",
     title: "Yield is not guaranteed; capital is at risk.",
-    body: "Multiply relies on Kamino lending: a sustained jitoSOL depeg, a SOL liquidity event, or a borrow-rate spike can liquidate the position. HedgedJLP is a basis trade: when Jupiter Perps funding diverges from JLP fee accrual, the spread can compress to zero or invert. Stable Yield earns USDC supply APR — the lowest-risk strategy, but still subject to Kamino utilization spikes and the reserve's bad-debt provisioning.",
+    body: "ONyc relies on Kamino's isolated ONyc market: a sustained NAV impairment of the underlying reinsurance book, a USDC borrow-rate spike, or a Chainlink Data Streams outage on the ONyc oracle can each pressure the position and require deleveraging or accept a haircut. HedgedJLP is a basis trade: when Jupiter Perps funding diverges from JLP fee accrual, the spread can compress to zero or invert. Stable Yield earns USDC supply APR — the lowest-risk strategy, but still subject to Kamino utilization spikes and the reserve's bad-debt provisioning.",
   },
   {
     number: "02",
     label: "Liquidity + withdrawals",
     title: "Redemptions are not instant; stress widens the queue.",
-    body: "Unwinding multiply requires multiple Kamino transactions; hedgedjlp requires closing perps positions; large redemptions face slippage that the dashboard's quoted NAV does not reflect. Under normal conditions a withdrawal completes within a business day. Under stress — Kamino USDC utilization saturating against borrow repayments, JLP or perps illiquidity, or many simultaneous depositor withdrawals — the queue stretches and partial payouts may occur. The operator commits to best-effort timely execution; this is not a guarantee.",
+    body: "Unwinding onyc requires multiple Kamino transactions (repay USDC, withdraw ONyc collateral, swap back to USDC); hedgedjlp requires closing perps positions; large redemptions face slippage that the dashboard's quoted NAV does not reflect. Under normal conditions a withdrawal completes within a business day. Under stress — Kamino USDC utilization saturating against borrow repayments, JLP or perps illiquidity, ONyc secondary-market thinness, or many simultaneous depositor withdrawals — the queue stretches and partial payouts may occur. The operator commits to best-effort timely execution; this is not a guarantee.",
   },
   {
     number: "03",
@@ -33,13 +33,13 @@ const RISKS = [
     number: "05",
     label: "Oracle",
     title: "Strategy execution depends on external price feeds.",
-    body: "Pyth publishes spot prices on Solana, Switchboard is the backup, Jupiter's price API marks jitoSOL and JLP. We do not read Pyth directly — Kamino's lending program aggregates these feeds through its own scope-prices view and we trust that aggregation. Three concrete failure modes. (1) Outage: Pyth or Switchboard stops publishing; riskwatcher refuses to authorize action on stale data and the position drifts unmanaged through the outage. (2) Lag during a fast move: Pyth uses a pull-oracle update model on Solana — anyone submits the updates — so during a sharp price move the on-chain price can lag by seconds, long enough for Kamino's keepers to liquidate the multiply position at a price that no longer exists. (3) Manipulation: a successful attack on the feeder set (thin-market pump, aggregator exploit, governance capture) propagates a confident-but-wrong price, and the strategies act on it before correction. Solana DeFi has seen this shape of attack before; it has not gone away.",
+    body: "Pyth publishes spot prices on Solana, Switchboard is the backup, Jupiter's price API marks JLP. Kamino's isolated ONyc market uses Chainlink Data Streams for ONyc NAV — a different feed family with its own attestation cadence and OnRe / Apex Group dependency. We do not read these oracles directly; Kamino's lending program aggregates them through its own scope-prices view and we trust that aggregation. Three concrete failure modes. (1) Outage: an oracle stops publishing; riskwatcher refuses to authorize action on stale data and the position drifts unmanaged through the outage. (2) Lag during a fast move: pull-oracle update models can stale on-chain prices by seconds during a sharp move, long enough for Kamino's keepers to liquidate at a price that no longer exists. (3) Manipulation: a successful attack on the feeder set (thin-market pump, aggregator exploit, governance capture) propagates a confident-but-wrong price, and the strategies act on it before correction. Solana DeFi has seen this shape of attack before; it has not gone away.",
   },
   {
     number: "06",
     label: "Operator key",
     title: "Long-lived signing key, no third-party custody.",
-    body: "The signing daemons hold a long-lived Ed25519 role key bound at compile time. There is no qualified custodian, no transfer agent, no multisig. If the operator's infrastructure is compromised, every signing daemon on that host is compromised. The riskwatcher and researcher roles deliberately cannot sign — but the three execution daemons (multiply, stable-yield, hedgedjlp) can.",
+    body: "The signing daemons hold a long-lived Ed25519 role key bound at compile time. There is no qualified custodian, no transfer agent, no multisig. If the operator's infrastructure is compromised, every signing daemon on that host is compromised. The riskwatcher and researcher roles deliberately cannot sign — but the three execution daemons (onyc, stable-yield, hedgedjlp) can.",
   },
   {
     number: "07",

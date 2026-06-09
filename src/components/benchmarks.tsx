@@ -40,7 +40,7 @@ export function Benchmarks() {
   const hedgents = [
     { label: "Stable Yield",    sublabel: "Kamino USDC supply",          apy: rates.stableYieldAprPct, risk: "Low",     highlight: false },
     { label: "Portfolio Blend", sublabel: "Equal-weight · three strats", apy: rates.portfolioAprPct,   risk: "Low–Med", highlight: true  },
-    { label: "Multiply",        sublabel: "2.5× leveraged jitoSOL",      apy: rates.multiplyAprPct,    risk: "Medium",  highlight: false },
+    { label: "ONyc",            sublabel: "Leveraged tokenized reinsurance NAV", apy: rates.onycAprPct,        risk: "Medium",  highlight: false },
     { label: "Hedged JLP",      sublabel: "Delta-neutral Jupiter LP",     apy: rates.hedgedjlpAprPct,  risk: "Low–Med", highlight: false },
   ];
 

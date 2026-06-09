@@ -42,7 +42,7 @@ export function FleetRoleRail() {
           // (118 → 1002 in equal steps of ~177).
           // Three authority classes — gold/SIGNS, slate/ROUTES, blue/READ —
           // mirror the fleet.tsx card-grid colour scheme.
-          [118, "MULTIPLY", "signing", "signs"],
+          [118, "ONYC", "signing", "signs"],
           [295, "STABLE", "signing", "signs"],
           [472, "JLP", "signing", "signs"],
           [649, "ALLOCATOR", "routes", "routes"],

@@ -140,8 +140,8 @@ export function VaultInviteModal({ open, onClose }: Props) {
                 </h2>
                 <p className="text-sm text-white/60 mb-5 leading-relaxed">
                   One deposit, three strategies running on-chain. Stable lending +
-                  leveraged jitoSOL + hedged JLP. Non-custodial, withdraw any
-                  time. For people who&apos;d rather not babysit positions.
+                  leveraged ONyc reinsurance NAV + hedged JLP. Non-custodial,
+                  withdraw any time. For people who&apos;d rather not babysit positions.
                 </p>
                 <form onSubmit={submitCode} className="space-y-3">
                   <label className="block">

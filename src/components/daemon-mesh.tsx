@@ -6,27 +6,27 @@ const NODES = [
   { id: "researcher",  x: 110, y: 75,  readOnly: true,  label: "researcher" },
   { id: "riskwatcher", x: 310, y: 75,  readOnly: true,  label: "riskwatcher" },
   { id: "stable",      x: 210, y: 235, readOnly: false, label: "stable-yield" },
-  { id: "multiply",    x: 70,  y: 390, readOnly: false, label: "multiply" },
+  { id: "onyc",    x: 70,  y: 390, readOnly: false, label: "onyc" },
   { id: "hedgedjlp",  x: 350, y: 390, readOnly: false, label: "hedgedjlp" },
 ];
 
 const EDGES = [
   ["researcher",  "riskwatcher"],
   ["researcher",  "stable"],
-  ["researcher",  "multiply"],
+  ["researcher",  "onyc"],
   ["researcher",  "hedgedjlp"],
   ["riskwatcher", "stable"],
-  ["riskwatcher", "multiply"],
+  ["riskwatcher", "onyc"],
   ["riskwatcher", "hedgedjlp"],
-  ["stable",      "multiply"],
+  ["stable",      "onyc"],
   ["stable",      "hedgedjlp"],
-  ["multiply",    "hedgedjlp"],
+  ["onyc",    "hedgedjlp"],
 ];
 
 // Which edges carry animated data packets
 const PACKETS = [
   { from: "researcher",  to: "stable",     dur: "2.8s", begin: "0s" },
-  { from: "riskwatcher", to: "multiply",   dur: "3.2s", begin: "1.1s" },
+  { from: "riskwatcher", to: "onyc",   dur: "3.2s", begin: "1.1s" },
   { from: "stable",      to: "hedgedjlp",  dur: "2.4s", begin: "0.6s" },
   { from: "researcher",  to: "hedgedjlp",  dur: "3.6s", begin: "1.8s" },
   { from: "riskwatcher", to: "stable",     dur: "2.6s", begin: "2.2s" },
