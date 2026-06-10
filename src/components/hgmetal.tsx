@@ -463,13 +463,31 @@ export function HgMetal() {
   // Disable it for this route and restore on unmount.
   useEffect(() => {
     const html = document.documentElement;
-    const prev = html.style.scrollSnapType;
+    const prevSnap = html.style.scrollSnapType;
+    const prevBehavior = html.style.scrollBehavior;
+    const prevRestore =
+      "scrollRestoration" in history ? history.scrollRestoration : undefined;
+
+    // The home page uses mandatory scroll-snap + smooth scrolling on
+    // <html>. On this route the browser was restoring the previous
+    // scroll position (the bottom) and `scroll-smooth` made it visibly
+    // animate down. Turn off snap + smooth + restoration, jump to the
+    // top instantly, and re-assert after layout settles so a late
+    // restoration can't win.
     html.style.scrollSnapType = "none";
-    // Open at the hero. Mandatory-snap can leave the viewport parked at
-    // the last snap point on load; force the top once snapping is off.
+    html.style.scrollBehavior = "auto";
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+
     window.scrollTo(0, 0);
+    const raf = requestAnimationFrame(() => window.scrollTo(0, 0));
+
     return () => {
-      html.style.scrollSnapType = prev;
+      html.style.scrollSnapType = prevSnap;
+      html.style.scrollBehavior = prevBehavior;
+      if ("scrollRestoration" in history && prevRestore) {
+        history.scrollRestoration = prevRestore;
+      }
+      cancelAnimationFrame(raf);
     };
   }, []);
 
