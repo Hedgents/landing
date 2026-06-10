@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 
 const ease = [0.25, 0.1, 0.25, 1.0] as const;
 
@@ -455,6 +456,20 @@ function Cta() {
 }
 
 export function HgMetal() {
+  // The site sets `scroll-snap-type: y mandatory` globally on <html> for
+  // the home page's full-height snap deck. This route is a normal
+  // variable-height scroll page; mandatory snapping with no aligned
+  // snap children traps the scroll position ("stuck at the bottom").
+  // Disable it for this route and restore on unmount.
+  useEffect(() => {
+    const html = document.documentElement;
+    const prev = html.style.scrollSnapType;
+    html.style.scrollSnapType = "none";
+    return () => {
+      html.style.scrollSnapType = prev;
+    };
+  }, []);
+
   return (
     <div className="flex flex-col">
       <Hero />
