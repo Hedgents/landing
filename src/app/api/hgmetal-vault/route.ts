@@ -163,6 +163,50 @@ export async function GET() {
     });
     const basketLiveValue = metals.reduce((a, m) => a + m.valueUsd, 0);
 
+    // ── live HL carry (for implied tranche APRs) + hgMETAL index 24h ──
+    // Weighted: gold/silver-heavy, Pt/Pd small (thin OI caps).
+    const CARRY_W: Record<string, number> = { GOLD: 0.45, SILVER: 0.35, PLATINUM: 0.1, PALLADIUM: 0.1 };
+    const ORO = 3.5, FEES = 1.5, HRS_YR = 24 * 365;
+    let basketCarryPct = 0, metalIndex24hPct = 0;
+    try {
+      const hr = await fetch("https://api.hyperliquid.xyz/info", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "metaAndAssetCtxs", dex: "xyz" }),
+        cache: "no-store",
+      });
+      const hj = await hr.json();
+      const uni = hj[0]?.universe ?? [], ctx = hj[1] ?? [];
+      let wsum = 0;
+      for (let i = 0; i < uni.length; i++) {
+        const sym = String(uni[i].name).split(":").pop()!.toUpperCase();
+        const w = CARRY_W[sym];
+        if (!w || !ctx[i]) continue;
+        const fundingAnn = Number(ctx[i].funding) * HRS_YR * 100;
+        basketCarryPct += w * (fundingAnn + (sym === "GOLD" ? ORO : 0));
+        const mark = Number(ctx[i].markPx), prev = Number(ctx[i].prevDayPx);
+        if (mark && prev) metalIndex24hPct += w * ((mark / prev - 1) * 100);
+        wsum += w;
+      }
+      basketCarryPct -= FEES;
+      if (wsum) metalIndex24hPct /= wsum;
+    } catch {
+      basketCarryPct = NaN;
+    }
+
+    // Implied tranche APRs: senior at its 5% target; junior = the residual
+    // carry on its base (deployed ~ total NAV).
+    const SENIOR_TARGET = 5;
+    const grossCarryUsd = Number.isNaN(basketCarryPct) ? 0 : (basketCarryPct / 100) * totalNav;
+    const seniorCouponUsd = (SENIOR_TARGET / 100) * seniorNav;
+    const juniorAprPct = juniorNav > 0 ? ((grossCarryUsd - seniorCouponUsd) / juniorNav) * 100 : 0;
+
+    const tickers = {
+      hgUSD: { label: "senior", priceUsd: seniorSupply ? seniorNav / seniorSupply : 1, aprPct: SENIOR_TARGET },
+      hgYIELD: { label: "junior", priceUsd: juniorSupply ? juniorNav / juniorSupply : 1, aprPct: juniorAprPct },
+      hgMETAL: { label: "exposure", change24hPct: metalIndex24hPct, yieldPct: ORO },
+    };
+
     return NextResponse.json({
       ok: true,
       fetchedAt: Date.now(),
@@ -171,6 +215,8 @@ export async function GET() {
       metals,
       basketLiveValue,
       usdcReserve,
+      basketCarryPct,
+      tickers,
       nav: {
         total: totalNav,
         senior: seniorNav,

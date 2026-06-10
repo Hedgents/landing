@@ -24,6 +24,12 @@ interface VaultData {
   metals: Metal[];
   basketLiveValue: number;
   usdcReserve: number;
+  basketCarryPct?: number;
+  tickers?: {
+    hgUSD: { label: string; priceUsd: number; aprPct: number };
+    hgYIELD: { label: string; priceUsd: number; aprPct: number };
+    hgMETAL: { label: string; change24hPct: number; yieldPct: number };
+  };
   nav: {
     total: number;
     senior: number;
@@ -167,6 +173,23 @@ function Terminal() {
       <div style={{ color: DIM }} className="mb-3 truncate">
         vault {data.vault.slice(0, 6)}…{data.vault.slice(-4)} · program {data.program.slice(0, 6)}…{data.program.slice(-4)}
       </div>
+
+      {/* 3-ticker tape */}
+      {data.tickers && (
+        <div className="grid grid-cols-3 gap-2 mb-2">
+          {([
+            { k: "hgMETAL", color: GOLD, top: `idx ${data.tickers.hgMETAL.change24hPct >= 0 ? "+" : ""}${data.tickers.hgMETAL.change24hPct.toFixed(2)}% 24h`, apr: `${data.tickers.hgMETAL.yieldPct.toFixed(1)}% yield` },
+            { k: "hgUSD", color: STEEL, top: `$${data.tickers.hgUSD.priceUsd.toFixed(4)}`, apr: `${data.tickers.hgUSD.aprPct.toFixed(1)}% APR` },
+            { k: "hgYIELD", color: GREEN, top: `$${data.tickers.hgYIELD.priceUsd.toFixed(4)}`, apr: `${data.tickers.hgYIELD.aprPct >= 0 ? "+" : ""}${data.tickers.hgYIELD.aprPct.toFixed(1)}% APR` },
+          ] as const).map((t) => (
+            <div key={t.k} className="rounded border border-white/10 px-2 py-1.5">
+              <div style={{ color: t.color }} className="font-bold text-[11px] sm:text-xs">{t.k}</div>
+              <div className="text-white text-[11px] sm:text-xs">{t.top}</div>
+              <div style={{ color: DIM }} className="text-[10px] sm:text-[11px]">{t.apr}</div>
+            </div>
+          ))}
+        </div>
+      )}
       <div className="border-t border-white/10 my-2" />
 
       {/* metals */}
