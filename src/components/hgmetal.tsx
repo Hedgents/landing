@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect } from "react";
+import { HgMetalTerminal } from "@/components/hgmetal-terminal";
 
 const ease = [0.25, 0.1, 0.25, 1.0] as const;
 
@@ -412,6 +413,41 @@ function LiveOnDevnet() {
   );
 }
 
+// ── Live terminal (gated) ─────────────────────────────────────────
+
+function LiveTerminal() {
+  return (
+    <Section id="terminal">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, ease }}
+        className="mb-8"
+      >
+        <Eyebrow>05 / Live terminal</Eyebrow>
+        <h2 className="font-serif text-4xl sm:text-5xl font-bold text-foreground leading-tight">
+          Watch the vault, live.
+        </h2>
+        <p className="mt-4 text-muted-foreground leading-relaxed max-w-2xl">
+          A direct read of the devnet vault: live Pyth metal prices, the basket
+          marked to those prices, and the senior / junior / unallocated NAV split,
+          refreshing every few seconds.
+        </p>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.1, ease }}
+        className="max-w-2xl"
+      >
+        <HgMetalTerminal />
+      </motion.div>
+    </Section>
+  );
+}
+
 // ── CTA ───────────────────────────────────────────────────────────
 
 function Cta() {
@@ -499,6 +535,7 @@ export function HgMetal() {
         <ProductFamily />
         <MetalsFleet />
         <LiveOnDevnet />
+        <LiveTerminal />
       </div>
       <Cta />
     </div>
