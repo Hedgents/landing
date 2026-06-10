@@ -146,9 +146,9 @@ export function Fleet() {
           <p className="mt-4 text-muted-foreground leading-relaxed max-w-2xl">
             Each agent has exactly one role and cannot exceed it.
             Three sign Solana transactions and manage positions. Two observe and publish
-            signals — they have no authority to move funds, by design.
-            One orchestrates: routes Assign/Withdraw envelopes between the others, but
-            its binary cannot sign a Solana tx either — the wallet crate is intentionally
+            signals; they have no authority to move funds, by design.
+            One orchestrates: it routes Assign/Withdraw envelopes between the others, but
+            its binary cannot sign a Solana tx either. The wallet crate is intentionally
             absent from its dependency graph.
           </p>
         </motion.div>

@@ -25,7 +25,7 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Hedgents — Institutional DeFi, Autonomous",
+  title: "Hedgents · Institutional DeFi, Autonomous",
   description:
     "A self-hosted treasury management fleet of role-isolated autonomous agents on Solana. On-premise. Your hardware. Your keys.",
   keywords: [
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
-    title: "Hedgents — Institutional DeFi, Autonomous",
+    title: "Hedgents · Institutional DeFi, Autonomous",
     description:
       "A self-hosted treasury management fleet of role-isolated autonomous agents on Solana.",
     url: "https://hedgents.com",

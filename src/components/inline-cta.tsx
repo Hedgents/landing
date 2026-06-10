@@ -19,7 +19,7 @@ export function InlineCTA() {
             Seen enough to have a conversation?
           </p>
           <p className="text-xs text-muted-foreground mt-1">
-            We work directly with each operator — infrastructure requirements, risk parameters, deployment timeline.
+            We work directly with each operator on infrastructure requirements, risk parameters, and deployment timeline.
           </p>
         </div>
         <a

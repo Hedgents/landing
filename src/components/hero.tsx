@@ -81,7 +81,7 @@ export function Hero() {
           Every other DeFi automation platform holds your signing keys on their
           servers.{" "}
           <span style={{ color: "rgba(255,255,255,0.85)", fontWeight: 600 }}>
-            Hedgents runs on your hardware — there is no Hedgents server.
+            Hedgents runs on your hardware. There is no Hedgents server.
           </span>{" "}
           Your keys never leave your machines.
         </motion.p>
@@ -94,7 +94,7 @@ export function Hero() {
           <span style={{ color: "rgba(255,255,255,0.75)" }}>
             fleet of six specialized agents
           </span>
-          {" "}— each with one fixed role. The agent that monitors risk
+          {", each with one fixed role. "}The agent that monitors risk
           cannot trade. The agents that trade cannot change their own limits.
           The allocator that orchestrates them holds no Solana keys.
           Currently paper-trading at{" "}

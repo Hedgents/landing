@@ -62,7 +62,7 @@ export function VaultInviteModal({ open, onClose }: Props) {
         setError(j.status || "code not recognised");
       }
     } catch {
-      setError("can't reach the server — try again in a moment");
+      setError("can't reach the server, try again in a moment");
     } finally {
       setBusy(false);
     }
@@ -86,7 +86,7 @@ export function VaultInviteModal({ open, onClose }: Props) {
         setError(j.message || "registration failed");
       }
     } catch {
-      setError("can't reach the server — try again in a moment");
+      setError("can't reach the server, try again in a moment");
     } finally {
       setBusy(false);
     }
@@ -192,7 +192,7 @@ export function VaultInviteModal({ open, onClose }: Props) {
                 </h2>
                 <p className="text-sm text-white/60 mb-5 leading-relaxed">
                   We&apos;ll email deposit instructions within 48 hours. The
-                  beta cohort is small — deposits are processed manually so we
+                  beta cohort is small, so deposits are processed manually and we
                   can catch edge cases before the public launch.
                 </p>
                 <form onSubmit={submitEmail} className="space-y-3">

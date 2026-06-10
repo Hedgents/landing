@@ -70,10 +70,10 @@ function Hero() {
             hg<span style={{ color: GOLD }}>METAL</span>
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-white/70 leading-relaxed">
-            Metals-focused structured products on Solana — gold, silver, platinum,
-            palladium and copper — operated by an autonomous, role-isolated agent
-            fleet that actively rebalances across cross-metal strategies and
-            tranches the output into senior and junior products.
+            Metals-focused structured products on Solana, spanning gold, silver,
+            platinum, palladium and copper. Run by an autonomous, role-isolated
+            agent fleet that actively rebalances across cross-metal strategies,
+            then tranches the output into senior and junior products.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -109,7 +109,7 @@ const MAPPING: { primitive: string; v0: string; metals: string }[] = [
   { primitive: "Riskwatcher (read-only)", v0: "LTV · liquidation distance", metals: "basket tracking error · hedge delta · concentration" },
   { primitive: "Orchestrator (route)", v0: "regime-aware USDC allocator", metals: "regime-aware allocator across metal strategies" },
   { primitive: "Active rebalance", v0: "USDC between 3 DeFi slots", metals: "capital between metal strategies as regimes shift" },
-  { primitive: "Product wrapper", v0: "— (raw vault)", metals: "hgMETAL / hgUSD / hgYIELD tranches" },
+  { primitive: "Product wrapper", v0: "none (raw vault)", metals: "hgMETAL / hgUSD / hgYIELD tranches" },
 ];
 
 function ProofScaleUp() {
@@ -129,7 +129,7 @@ function ProofScaleUp() {
         <p className="mt-4 text-muted-foreground leading-relaxed max-w-2xl">
           The Hedgents v0 fleet ran real capital across three DeFi strategies on
           Solana mainnet with an autonomous, role-isolated agent fleet and active
-          cross-strategy rebalancing. The point was never the yield — it was proving
+          cross-strategy rebalancing. The point was never the yield. It was proving
           the architecture works on-chain, with real money. hgMETAL re-applies that
           proven architecture to a domain that genuinely demands it: a multi-metal
           product where the strategies being rebalanced are metal strategies.
@@ -145,9 +145,9 @@ function ProofScaleUp() {
       >
         <div className="grid grid-cols-[1.1fr_1fr_1.3fr] bg-foreground/[0.03] font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
           <div className="px-4 py-3">Fleet primitive</div>
-          <div className="px-4 py-3 border-l border-border/40">v0 — proof (mainnet)</div>
+          <div className="px-4 py-3 border-l border-border/40">v0: proof (mainnet)</div>
           <div className="px-4 py-3 border-l border-border/40" style={{ color: GOLD }}>
-            hgMETAL — scale-up
+            hgMETAL: scale-up
           </div>
         </div>
         {MAPPING.map((row, i) => (
@@ -166,7 +166,7 @@ function ProofScaleUp() {
 
       <p className="mt-6 font-serif italic text-lg text-foreground/70 max-w-3xl">
         “v0 proved an autonomous role-based fleet can actively rebalance on-chain
-        capital. hgMETAL applies that same architecture to a multi-metal product —
+        capital. hgMETAL applies that same architecture to a multi-metal product:
         a fleet of metal-strategy agents rebalancing across precious and industrial
         metals, tranched into senior and junior products.”
       </p>
@@ -197,7 +197,7 @@ const PRODUCTS: {
     name: "Senior",
     accent: STEEL,
     tagline: "Gold-backed structured income",
-    body: "Delta-hedged carry with a defined yield target. First claim on the fleet's P&L, protected by the junior buffer. The income product — yield comes from carry, not gold price.",
+    body: "Delta-hedged carry with a defined yield target. First claim on the fleet's P&L, protected by the junior buffer. The income product: yield comes from carry, not gold price.",
     who: "Family offices · DAO treasuries",
   },
   {
@@ -226,7 +226,7 @@ function ProductFamily() {
         </h2>
         <p className="mt-4 text-muted-foreground leading-relaxed max-w-2xl">
           The fleet produces one stream of metals P&L. A senior/junior waterfall
-          splits it into products with distinct risk profiles — each depositor
+          splits it into products with distinct risk profiles, so each depositor
           self-selects by conviction.
         </p>
       </motion.div>
@@ -276,7 +276,7 @@ const AUTH: Record<Auth, { label: string; color: string }> = {
 };
 
 const ROLES: { name: string; auth: Auth; role: string }[] = [
-  { name: "gold-basis", auth: "signs", role: "Long basket, short XAU perp — delta-neutral carry" },
+  { name: "gold-basis", auth: "signs", role: "Long basket, short XAU perp for delta-neutral carry" },
   { name: "cross-metal-pair", auth: "signs", role: "GLD/SLV + GLD/PT ratio mean-reversion" },
   { name: "funding-capture", auth: "signs", role: "Sizes into extreme Flash v2 funding windows" },
   { name: "orchestrator", auth: "routes", role: "Regime-aware allocator across metal strategies" },
@@ -300,7 +300,7 @@ function MetalsFleet() {
         </h2>
         <p className="mt-4 text-muted-foreground leading-relaxed max-w-2xl">
           Five metal price feeds and multiple cross-metal strategy types make this a
-          real allocation problem — exactly what the fleet pattern is for. Each agent
+          real allocation problem, which is exactly what the fleet pattern is for. Each agent
           has one role and cannot exceed it. Execution daemons sign; observers can
           never move funds; the orchestrator routes but its binary cannot sign a
           Solana transaction at all.

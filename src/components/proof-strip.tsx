@@ -26,7 +26,7 @@ const CREDENTIALS = [
   {
     label: "Custody model",
     value: "self-deployed: zero transfer",
-    sub: "vault deposits are a tracked custody — see Risks",
+    sub: "vault deposits are a tracked custody (see Risks)",
   },
 ];
 

@@ -8,19 +8,19 @@ const appleEase = [0.25, 0.1, 0.25, 1.0] as const;
 const FAQS = [
   {
     q: "What is Hedgents?",
-    a: "Hedgents is a self-hosted treasury management system for institutions. You install it on your own servers. It runs six specialized agents — three that execute yield strategies (leveraged staking, USDC lending, delta-neutral JLP), two that observe and emit risk/market signals, and an allocator that orchestrates capital between them. You stay in full control of your capital at all times.",
+    a: "Hedgents is a self-hosted treasury management system for institutions. You install it on your own servers. It runs six specialized agents: three that execute yield strategies (leveraged staking, USDC lending, delta-neutral JLP), two that observe and emit risk/market signals, and an allocator that orchestrates capital between them. You stay in full control of your capital at all times.",
   },
   {
     q: "Who is this for?",
-    a: "Crypto funds, family offices, and institutional treasuries that want autonomous DeFi yield without delegating custody to a third party. If your compliance team has blocked every existing DeFi automation tool because it requires handing over keys — Hedgents is built for that constraint.",
+    a: "Crypto funds, family offices, and institutional treasuries that want autonomous DeFi yield without delegating custody to a third party. If your compliance team has blocked every existing DeFi automation tool because it requires handing over keys, Hedgents is built for that constraint.",
   },
   {
     q: "Where are my signing keys stored?",
-    a: "Only on your machines, in a directory you control. Hedgents never touches them — there is no Hedgents cloud, no API key sent back to us, no telemetry leaving your infrastructure. Your team generates the keys on first run and they stay local.",
+    a: "Only on your machines, in a directory you control. Hedgents never touches them. There is no Hedgents cloud, no API key sent back to us, no telemetry leaving your infrastructure. Your team generates the keys on first run and they stay local.",
   },
   {
     q: "What if one of the agents is compromised?",
-    a: "The three no-custody agents — risk officer, signal publisher, and allocator — are architecturally prevented from moving funds. The wallet crate is intentionally absent from their dependency graph; the binary cannot sign a Solana tx. For the three trading agents, a dedicated risk monitor watches every position and can pause trading if limits are breached. No single agent has unchecked authority.",
+    a: "The three no-custody agents (risk officer, signal publisher, and allocator) are architecturally prevented from moving funds. The wallet crate is intentionally absent from their dependency graph; the binary cannot sign a Solana tx. For the three trading agents, a dedicated risk monitor watches every position and can pause trading if limits are breached. No single agent has unchecked authority.",
   },
   {
     q: "How is this different from a trading bot?",
@@ -28,11 +28,11 @@ const FAQS = [
   },
   {
     q: "Is this ready for live capital?",
-    a: "The leveraged staking and USDC lending strategies are mainnet-ready and have been tested with live positions. The delta-neutral JLP strategy is currently in paper-trading mode. We recommend starting with a paper-trading period on your own infrastructure before deploying live capital — the dashboard shows real-time APY projections throughout.",
+    a: "The leveraged staking and USDC lending strategies are mainnet-ready and have been tested with live positions. The delta-neutral JLP strategy is currently in paper-trading mode. We recommend starting with a paper-trading period on your own infrastructure before deploying live capital. The dashboard shows real-time APY projections throughout.",
   },
   {
     q: "How do the agents communicate with each other?",
-    a: "Agents communicate over an encrypted peer-to-peer network — there is no central server routing messages. Every instruction is cryptographically signed by the sender and verified by the receiver. This means every action is attributable and the full history is auditable, which is what compliance teams typically require.",
+    a: "Agents communicate over an encrypted peer-to-peer network, with no central server routing messages. Every instruction is cryptographically signed by the sender and verified by the receiver. This means every action is attributable and the full history is auditable, which is what compliance teams typically require.",
   },
 ];
 

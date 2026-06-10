@@ -29,11 +29,11 @@ export function Problem() {
               Autonomous DeFi needs a custody model.
             </h2>
             <p className="mt-5 font-serif italic text-lg text-foreground/70 leading-snug">
-              How do you let software trade your capital — without giving software your keys?
+              How do you let software trade your capital without giving software your keys?
             </p>
             <p className="mt-5 text-sm text-muted-foreground leading-relaxed max-w-md">
               Every existing solution answers this with a promise. Hedgents answers it
-              with an architecture — one your compliance team can verify, not just read about.
+              with an architecture your compliance team can verify, not just read about.
             </p>
           </motion.div>
 
@@ -51,7 +51,7 @@ export function Problem() {
               &ldquo;The user is no longer an operator. They&apos;re an orchestrator.&rdquo;
             </p>
             <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
-              The CIO sets the mandate — risk caps, strategy mix, target yield.
+              The CIO sets the mandate: risk caps, strategy mix, target yield.
               The fleet executes continuously, without requiring human sign-off on every transaction.
             </p>
           </motion.div>

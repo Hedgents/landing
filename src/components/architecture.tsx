@@ -123,7 +123,7 @@ export function Architecture() {
           <p className="mt-4 text-muted-foreground leading-relaxed">
             Six independent libp2p peers. Each role can run on a separate VPC.
             Every message is a signed CBOR envelope. The allocator orchestrates
-            the others but holds no Solana keys — custody stays with each
+            the others but holds no Solana keys. Custody stays with each
             signing daemon, each in its own dependency-isolated binary.
           </p>
         </motion.div>
