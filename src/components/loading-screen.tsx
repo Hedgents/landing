@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState, useCallback } from "react";
+import { usePathname } from "next/navigation";
 
 const BOOT_LINES = [
   { text: "Hedgents Fleet v0.1.0", color: "#93c5fd", delay: 0 },
@@ -24,6 +25,9 @@ const TOTAL_DURATION = 2200; // ms before fade out starts
 const FADE_DURATION = 800; // ms for the fade out — sync with PageEntrance
 
 export function LoadingScreen() {
+  // The boot terminal is the v0 fleet's intro — only show it on the
+  // home page. Other routes (e.g. /hgmetal) get a clean load.
+  const isHome = usePathname() === "/";
   const [visibleLines, setVisibleLines] = useState<number[]>([]);
   const [progress, setProgress] = useState(0);
   const [exiting, setExiting] = useState(false);
@@ -35,7 +39,7 @@ export function LoadingScreen() {
   }, []);
 
   useEffect(() => {
-    if (!shouldShow) return;
+    if (!shouldShow || !isHome) return;
 
     const timers: NodeJS.Timeout[] = [];
     BOOT_LINES.forEach((line, i) => {
@@ -58,9 +62,9 @@ export function LoadingScreen() {
       clearInterval(interval);
       clearTimeout(t);
     };
-  }, [shouldShow, handleExit]);
+  }, [shouldShow, isHome, handleExit]);
 
-  if (!shouldShow) return null;
+  if (!shouldShow || !isHome) return null;
 
   return (
     <AnimatePresence>

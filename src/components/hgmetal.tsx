@@ -465,6 +465,9 @@ export function HgMetal() {
     const html = document.documentElement;
     const prev = html.style.scrollSnapType;
     html.style.scrollSnapType = "none";
+    // Open at the hero. Mandatory-snap can leave the viewport parked at
+    // the last snap point on load; force the top once snapping is off.
+    window.scrollTo(0, 0);
     return () => {
       html.style.scrollSnapType = prev;
     };
