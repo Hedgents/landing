@@ -23,10 +23,6 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <motion.header
       className={cn(
@@ -36,28 +32,32 @@ export function Navbar() {
       style={{ backgroundColor: "var(--navy)" }}
     >
       <nav className="mx-auto flex h-12 max-w-6xl items-center justify-between px-6">
-        {/* Logo */}
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="flex items-center gap-2.5 group"
-        >
+        {/* Logo — always returns to home */}
+        <a href="/" className="flex items-center gap-2.5 group">
           <img src="/logo.jpg" alt="Hedgents" className="h-5 w-auto" />
           <span className="font-serif text-sm font-bold text-white group-hover:opacity-80 transition-opacity">
             hedgents
           </span>
-        </button>
+        </a>
 
-        {/* Nav links */}
+        {/* Nav links — anchor to the home page so they work from any route */}
         <div className="hidden md:flex items-center gap-0.5">
           {SECTIONS.map((s) => (
-            <button
+            <a
               key={s.id}
-              onClick={() => scrollTo(s.id)}
+              href={`/#${s.id}`}
               className="px-3 py-1.5 text-xs text-white/50 hover:text-white/90 transition-colors font-mono"
             >
               {s.label}
-            </button>
+            </a>
           ))}
+          <a
+            href="/hgmetal"
+            className="px-3 py-1.5 text-xs transition-colors font-mono"
+            style={{ color: "var(--gold)" }}
+          >
+            hgMETAL
+          </a>
         </div>
 
         {/* CTA */}
