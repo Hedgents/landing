@@ -13,7 +13,7 @@ export const revalidate = 0;
 
 const RPC = "https://api.devnet.solana.com";
 const HERMES = "https://hermes.pyth.network";
-const VAULT = "AyPb3nBBTZXPeF4sNn3y4yFN2g4wvLKzajEEiKJAPBY5";
+const VAULT = "F4jMjSpNviUHmKLtfgHRY9GDg1czYuey4XUsXs45c8T4";
 
 const METALS = [
   { sym: "XAU", name: "Gold", feedId: "765d2ba906dbc32ca17cc11f5310a89e9ee1f6420508c63861f2f8ba4ee34bb2" },
