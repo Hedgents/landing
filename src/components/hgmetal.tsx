@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { HgMetalTerminal } from "@/components/hgmetal-terminal";
+import { HgMetalReplay } from "@/components/hgmetal-replay";
 
 const ease = [0.25, 0.1, 0.25, 1.0] as const;
 
@@ -413,6 +414,42 @@ function LiveOnDevnet() {
   );
 }
 
+// ── Replay (historical slider) ────────────────────────────────────
+
+function ReplaySection() {
+  return (
+    <Section id="replay">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, ease }}
+        className="mb-8"
+      >
+        <Eyebrow>05 / Replay</Eyebrow>
+        <h2 className="font-serif text-4xl sm:text-5xl font-bold text-foreground leading-tight">
+          Drag through the history.
+        </h2>
+        <p className="mt-4 text-muted-foreground leading-relaxed max-w-2xl">
+          Real Hyperliquid funding, replayed day by day through the on-chain
+          waterfall, with real metal prices for the basket. Watch the three
+          tokens diverge: the metal index swings with metals, while the hedged
+          senior and junior keep earning the carry.
+        </p>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.1, ease }}
+        className="max-w-3xl"
+      >
+        <HgMetalReplay />
+      </motion.div>
+    </Section>
+  );
+}
+
 // ── Live terminal (gated) ─────────────────────────────────────────
 
 function LiveTerminal() {
@@ -425,7 +462,7 @@ function LiveTerminal() {
         transition={{ duration: 0.6, ease }}
         className="mb-8"
       >
-        <Eyebrow>05 / Live terminal</Eyebrow>
+        <Eyebrow>06 / Live terminal</Eyebrow>
         <h2 className="font-serif text-4xl sm:text-5xl font-bold text-foreground leading-tight">
           Watch the vault, live.
         </h2>
@@ -535,6 +572,7 @@ export function HgMetal() {
         <ProductFamily />
         <MetalsFleet />
         <LiveOnDevnet />
+        <ReplaySection />
         <LiveTerminal />
       </div>
       <Cta />
