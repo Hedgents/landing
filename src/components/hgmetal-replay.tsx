@@ -25,32 +25,49 @@ const STEEL = "#7BA3C8";
 const GREEN = "#86efac";
 const DIM = "rgba(255,255,255,0.45)";
 
-// normalized series (all start ~1.0): metalIndex/100, hgUSD px, hgYIELD px
-function norm(d: Day) {
-  return { metal: d.metalIndex / 100, usd: d.hgUsdPx, yld: d.hgYieldPx };
-}
-
+// Two separate scales: hgMETAL is a metal price INDEX (its own unit);
+// hgUSD + hgYIELD are USD NAV tokens that both start at $1.00 par. They
+// do not share a baseline — metal gets its own panel.
 function Chart({ idx }: { idx: number }) {
-  const W = 640, H = 150, pad = 6;
-  const pts = SERIES.map(norm);
-  const all = pts.flatMap((p) => [p.metal, p.usd, p.yld]);
-  const lo = Math.min(...all), hi = Math.max(...all);
-  const x = (i: number) => pad + (i / (SERIES.length - 1)) * (W - 2 * pad);
-  const y = (v: number) => H - pad - ((v - lo) / (hi - lo || 1)) * (H - 2 * pad);
-  const pathOf = (sel: (p: ReturnType<typeof norm>) => number) =>
-    pts.map((p, i) => `${i === 0 ? "M" : "L"}${x(i).toFixed(1)},${y(sel(p)).toFixed(1)}`).join(" ");
+  const W = 640, padX = 6;
+  const n = SERIES.length;
+  const x = (i: number) => padX + (i / (n - 1)) * (W - 2 * padX);
   const mx = x(idx);
+
+  // panel geometry
+  const A = { top: 14, h: 70 };   // metal index
+  const B = { top: 110, h: 96 };  // USD tranches
+  const totalH = B.top + B.h + 14;
+
+  const metal = SERIES.map((d) => d.metalIndex);
+  const mLo = Math.min(...metal), mHi = Math.max(...metal);
+  const tr = SERIES.flatMap((d) => [d.hgUsdPx, d.hgYieldPx]);
+  const tLo = Math.min(...tr, 1), tHi = Math.max(...tr);
+
+  const yA = (v: number) => A.top + A.h - ((v - mLo) / (mHi - mLo || 1)) * A.h;
+  const yB = (v: number) => B.top + B.h - ((v - tLo) / (tHi - tLo || 1)) * B.h;
+  const pathA = SERIES.map((d, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${yA(d.metalIndex).toFixed(1)}`).join(" ");
+  const pathOfB = (sel: (d: Day) => number) =>
+    SERIES.map((d, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${yB(sel(d)).toFixed(1)}`).join(" ");
+  const d = SERIES[idx];
+
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: "auto" }}>
-      <line x1={x(0)} y1={y(1)} x2={x(SERIES.length - 1)} y2={y(1)} stroke="rgba(255,255,255,0.12)" strokeDasharray="3 3" />
-      <path d={pathOf((p) => p.metal)} fill="none" stroke={GOLD} strokeWidth={1.5} opacity={0.9} />
-      <path d={pathOf((p) => p.usd)} fill="none" stroke={STEEL} strokeWidth={1.5} />
-      <path d={pathOf((p) => p.yld)} fill="none" stroke={GREEN} strokeWidth={1.5} />
-      <line x1={mx} y1={pad} x2={mx} y2={H - pad} stroke="rgba(255,255,255,0.5)" strokeWidth={1} />
-      {(["metal", "usd", "yld"] as const).map((k) => {
-        const c = k === "metal" ? GOLD : k === "usd" ? STEEL : GREEN;
-        return <circle key={k} cx={mx} cy={y(norm(SERIES[idx])[k])} r={3} fill={c} />;
-      })}
+    <svg viewBox={`0 0 ${W} ${totalH}`} className="w-full" style={{ height: "auto" }}>
+      {/* panel A: metal index */}
+      <text x={padX} y={A.top - 3} fill={DIM} fontSize="9" fontFamily="monospace">hgMETAL · metal price index</text>
+      <path d={pathA} fill="none" stroke={GOLD} strokeWidth={1.5} opacity={0.95} />
+      <circle cx={mx} cy={yA(d.metalIndex)} r={3} fill={GOLD} />
+
+      {/* panel B: USD tranches, $1.00 par baseline */}
+      <text x={padX} y={B.top - 3} fill={DIM} fontSize="9" fontFamily="monospace">hgUSD + hgYIELD · USD NAV (par $1.00)</text>
+      <line x1={x(0)} y1={yB(1)} x2={x(n - 1)} y2={yB(1)} stroke="rgba(255,255,255,0.12)" strokeDasharray="3 3" />
+      <path d={pathOfB((d) => d.hgUsdPx)} fill="none" stroke={STEEL} strokeWidth={1.5} />
+      <path d={pathOfB((d) => d.hgYieldPx)} fill="none" stroke={GREEN} strokeWidth={1.5} />
+      <circle cx={mx} cy={yB(d.hgUsdPx)} r={3} fill={STEEL} />
+      <circle cx={mx} cy={yB(d.hgYieldPx)} r={3} fill={GREEN} />
+
+      {/* shared scrub marker */}
+      <line x1={mx} y1={A.top - 2} x2={mx} y2={B.top + B.h + 2} stroke="rgba(255,255,255,0.45)" strokeWidth={1} />
     </svg>
   );
 }
