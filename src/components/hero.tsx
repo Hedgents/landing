@@ -45,7 +45,7 @@ export function Hero() {
           className="font-mono text-[10px] uppercase tracking-[0.3em] mb-10"
           style={{ color: "rgba(255,255,255,0.35)" }}
         >
-          Institutional DeFi · Solana · On-Premise
+          Structured on-chain yield · Solana
         </motion.p>
 
         {/* Brand name — large serif, left-aligned */}
@@ -57,7 +57,7 @@ export function Hero() {
           Hedgents
         </motion.h1>
 
-        {/* Gold italic tagline */}
+        {/* Gold italic tagline — flagship is hgMETAL */}
         <motion.p
           {...fade(0.22)}
           className="font-serif italic leading-snug mt-5"
@@ -67,40 +67,35 @@ export function Hero() {
             maxWidth: "480px",
           }}
         >
-          Institutional DeFi execution.
+          Structured metals yield, on-chain.
           <br />
-          Without surrendering custody.
+          Run by an autonomous fleet.
         </motion.p>
 
-        {/* Hook — two paragraphs: custody, then governance */}
+        {/* Hook — flagship hgMETAL, then the fleet as a treasury product */}
         <motion.p
           {...fade(0.35)}
           className="mt-7 text-sm sm:text-base leading-relaxed"
-          style={{ color: "rgba(255,255,255,0.55)", maxWidth: "460px" }}
+          style={{ color: "rgba(255,255,255,0.55)", maxWidth: "470px" }}
         >
-          Every other DeFi automation platform holds your signing keys on their
-          servers.{" "}
-          <span style={{ color: "rgba(255,255,255,0.85)", fontWeight: 600 }}>
-            Hedgents runs on your hardware. There is no Hedgents server.
-          </span>{" "}
-          Your keys never leave your machines.
+          Our flagship,{" "}
+          <span style={{ color: "var(--gold)", fontWeight: 600 }}>hgMETAL</span>,
+          turns a delta-neutral metals trade into a structured product: a metals
+          basket hedged into market-neutral carry, split into a{" "}
+          <span style={{ color: "rgba(255,255,255,0.85)" }}>stable senior coupon</span>{" "}
+          and a{" "}
+          <span style={{ color: "rgba(255,255,255,0.85)" }}>levered junior</span>.
+          The carry is venue-verified, roughly 10% on a 30-day realized basis.
         </motion.p>
         <motion.p
           {...fade(0.45)}
           className="mt-4 text-sm sm:text-base leading-relaxed"
-          style={{ color: "rgba(255,255,255,0.45)", maxWidth: "460px" }}
+          style={{ color: "rgba(255,255,255,0.45)", maxWidth: "470px" }}
         >
-          Unlike a single trading bot, it deploys a{" "}
-          <span style={{ color: "rgba(255,255,255,0.75)" }}>
-            fleet of six specialized agents
-          </span>
-          {", each with one fixed role. "}The agent that monitors risk
-          cannot trade. The agents that trade cannot change their own limits.
-          The allocator that orchestrates them holds no Solana keys.
-          Currently paper-trading at{" "}
-          <span style={{ color: "var(--gold)", fontWeight: 600 }}>
-            {apy}% blended APY
-          </span>
+          It runs on the{" "}
+          <span style={{ color: "rgba(255,255,255,0.75)" }}>Hedgents fleet</span>, an
+          autonomous role-based system that also manages USDC treasuries as a
+          subscription, on your hardware, your keys. Live on Solana mainnet today
           {live && (
             <span className="inline-flex items-center gap-1 ml-1.5 align-middle">
               <span className="relative flex h-1.5 w-1.5">
@@ -109,8 +104,9 @@ export function Hero() {
               </span>
               <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "10px" }}>live</span>
             </span>
-          )}
-          {" "}on mainnet.
+          )}{" "}
+          at{" "}
+          <span style={{ color: "var(--gold)", fontWeight: 600 }}>{apy}% blended APY</span>.
         </motion.p>
 
         {/* CTAs */}
@@ -118,13 +114,23 @@ export function Hero() {
           {...fade(0.48)}
           className="mt-10 flex flex-col sm:flex-row gap-3"
         >
-          <button
-            type="button"
-            onClick={() => setVaultOpen(true)}
+          <a
+            href="/hgmetal"
             className="inline-flex items-center justify-center rounded px-6 py-2.5 font-mono text-sm font-semibold transition-opacity hover:opacity-80"
             style={{ backgroundColor: "var(--gold)", color: "var(--navy)" }}
           >
-            Try the vault →
+            Explore hgMETAL →
+          </a>
+          <button
+            type="button"
+            onClick={() => setVaultOpen(true)}
+            className="inline-flex items-center justify-center rounded border px-6 py-2.5 font-mono text-sm transition-colors hover:border-white/50 hover:text-white"
+            style={{
+              borderColor: "rgba(255,255,255,0.2)",
+              color: "rgba(255,255,255,0.6)",
+            }}
+          >
+            Treasury fleet →
           </button>
           <a
             href="mailto:contact@hedgents.com"
@@ -135,18 +141,6 @@ export function Hero() {
             }}
           >
             Talk to us →
-          </a>
-          <a
-            href="https://github.com/Hedgents/fleet"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center rounded border px-6 py-2.5 font-mono text-sm transition-colors hover:border-white/50 hover:text-white"
-            style={{
-              borderColor: "rgba(255,255,255,0.2)",
-              color: "rgba(255,255,255,0.6)",
-            }}
-          >
-            View on GitHub →
           </a>
         </motion.div>
         <VaultInviteModal open={vaultOpen} onClose={() => setVaultOpen(false)} />
