@@ -207,7 +207,28 @@ export async function GET() {
       hgMETAL: { label: "exposure", change24hPct: metalIndex24hPct, yieldPct: ORO },
     };
 
+    // ── fleet role view (mirrors the orchestrator's roles) ──────────
+    const LEVERAGE = 3, MM = 0.05, STRESS = 0.05;
+    const liqBufferPct = (1 / LEVERAGE - MM) * 100;
+    const riskOk = STRESS < 1 / LEVERAGE - MM;
+    const seniorCoverable = grossCarryUsd >= seniorCouponUsd;
+    const coverageX = seniorCouponUsd > 0 ? grossCarryUsd / seniorCouponUsd : 0;
+    const carrySignal = Number.isNaN(basketCarryPct)
+      ? "n/a"
+      : basketCarryPct >= 6 ? "strong" : basketCarryPct >= 3 ? "ok" : basketCarryPct >= 0 ? "thin" : "negative";
+    const decision = carrySignal === "negative"
+      ? "HOLD — carry negative, do not add"
+      : !riskOk ? "DE-RISK — raise reserve / lower leverage"
+      : "MAINTAIN — hold delta-neutral hedge, accrue carry";
+    const fleet = {
+      researcher: { carryPct: basketCarryPct, signal: carrySignal },
+      riskwatcher: { leverage: LEVERAGE, liqBufferPct: +liqBufferPct.toFixed(1), ok: riskOk },
+      treasury: { coverageX: +coverageX.toFixed(1), seniorCoverable, juniorAprPct: +juniorAprPct.toFixed(1) },
+      decision,
+    };
+
     return NextResponse.json({
+      fleet,
       ok: true,
       fetchedAt: Date.now(),
       vault: VAULT,
