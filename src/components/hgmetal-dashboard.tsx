@@ -146,6 +146,35 @@ function Dash() {
           </Panel>
         </div>
 
+        {/* downside — loss waterfall on the CURRENT NAV */}
+        <Panel title="downside · if the book takes a loss (first-loss waterfall)" className="mb-3">
+          <div className="grid grid-cols-[5rem_1fr_1fr_1fr] gap-2 font-mono text-[11px]" style={{ color: DIM }}>
+            <span>book loss</span><span>hgUSD /sh</span><span>hgYIELD /sh</span><span>who absorbs</span>
+          </div>
+          {[0, 5, 10, 20, 30, 50].map((pct) => {
+            const total = nav.total * (1 - pct / 100);
+            const senior = Math.min(total, nav.senior);       // senior protected until exhausted
+            const junior = Math.max(0, total - senior);
+            const sPx = nav.seniorSupply ? senior / nav.seniorSupply : 1;
+            const jPx = nav.juniorSupply ? junior / nav.juniorSupply : 1;
+            const wiped = junior <= 0.0001 && nav.junior > 0;
+            const who = pct === 0 ? "—" : junior > 0 ? "junior only" : wiped && senior >= nav.senior ? "junior WIPED" : "junior wiped + SENIOR hit";
+            return (
+              <div key={pct} className="grid grid-cols-[5rem_1fr_1fr_1fr] gap-2 font-mono text-xs py-0.5">
+                <span style={{ color: pct === 0 ? DIM : RED }}>{pct === 0 ? "none" : `-${pct}%`}</span>
+                <span style={{ color: senior < nav.senior ? RED : STEEL }}>{money(sPx, 4)}</span>
+                <span style={{ color: junior < nav.junior ? RED : GREEN }}>{money(jPx, 4)}</span>
+                <span style={{ color: DIM }} className="text-[11px]">{who}</span>
+              </div>
+            );
+          })}
+          <p style={{ color: DIM }} className="text-[11px] mt-2 leading-relaxed">
+            hgYIELD absorbs losses first, its NAV falls to $0 before hgUSD loses a cent.
+            hgUSD stays whole until junior is fully wiped (here, ~a {((nav.junior / nav.total) * 100).toFixed(0)}% book loss),
+            then takes only the overflow. That protection is what hgYIELD is paid the higher APR for.
+          </p>
+        </Panel>
+
         {/* metals */}
         <Panel title="basket" className="mb-3">
           <div className="grid grid-cols-[3rem_6rem_3rem_5rem_1fr] gap-2 font-mono text-[11px]" style={{ color: DIM }}>
