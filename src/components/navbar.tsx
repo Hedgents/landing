@@ -4,14 +4,11 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
-const SECTIONS = [
-  { id: "problem",          label: "The gap" },
-  { id: "fleet",            label: "Fleet" },
-  { id: "differentiators",  label: "Safety" },
-  { id: "benchmarks",       label: "Benchmarks" },
-  { id: "architecture",     label: "Architecture" },
-  { id: "faq",              label: "FAQ" },
-  { id: "risks",            label: "Risks" },
+// Two-product structure: hgMETAL (flagship) + the treasury fleet, plus
+// the live dashboard. Routes, not homepage anchors.
+const LINKS = [
+  { href: "/fleet", label: "Treasury fleet", gold: false },
+  { href: "/dashboard", label: "Dashboard", gold: false },
 ];
 
 export function Navbar() {
@@ -40,17 +37,8 @@ export function Navbar() {
           </span>
         </a>
 
-        {/* Nav links — anchor to the home page so they work from any route */}
+        {/* Nav links — product routes */}
         <div className="hidden md:flex items-center gap-0.5">
-          {SECTIONS.map((s) => (
-            <a
-              key={s.id}
-              href={`/#${s.id}`}
-              className="px-3 py-1.5 text-xs text-white/50 hover:text-white/90 transition-colors font-mono"
-            >
-              {s.label}
-            </a>
-          ))}
           <a
             href="/hgmetal"
             className="px-3 py-1.5 text-xs transition-colors font-mono"
@@ -58,6 +46,15 @@ export function Navbar() {
           >
             hgMETAL
           </a>
+          {LINKS.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              className="px-3 py-1.5 text-xs text-white/50 hover:text-white/90 transition-colors font-mono"
+            >
+              {l.label}
+            </a>
+          ))}
         </div>
 
         {/* CTA */}
