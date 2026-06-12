@@ -114,6 +114,10 @@
   }
   html {
     @apply font-sans;
-    scroll-snap-type: y mandatory;
+    /* proximity (not mandatory): snaps gently when you stop near a
+       full-height section, but lets you rest anywhere — including on
+       content sections taller than the viewport (e.g. the two-product
+       section). mandatory yanked the scroll off those. */
+    scroll-snap-type: y proximity;
   }
 }
