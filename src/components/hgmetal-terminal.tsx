@@ -1,287 +1,276 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
-import { createChart, ColorType, type IChartApi, type ISeriesApi } from "lightweight-charts";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 const PASSCODE = "GOlD";
 const STORAGE_KEY = "hgmetal-terminal-unlocked";
-const REFRESH_MS = 8000;
+const REFRESH_MS = 6000;
 
-type SeriesPoint = {
-  date: string; metalIndex: number; hgUsdPx: number; hgYieldPx: number;
-  hgUsdApr: number; hgYieldApr: number; dayCarry: number;
-};
-type TickerKey = "hgUSD" | "hgYIELD" | "hgMETAL";
+interface Metal {
+  sym: string;
+  name: string;
+  weightPct: number;
+  balance: number;
+  priceUsd: number;
+  cachedPriceUsd: number;
+  valueUsd: number;
+  live: boolean;
+}
+interface VaultData {
+  ok: boolean;
+  fetchedAt: number;
+  vault: string;
+  program: string;
+  metals: Metal[];
+  basketLiveValue: number;
+  usdcReserve: number;
+  basketCarryPct?: number;
+  tickers?: {
+    hgUSD: { label: string; priceUsd: number; aprPct: number };
+    hgYIELD: { label: string; priceUsd: number; aprPct: number };
+    hgMETAL: { label: string; change24hPct: number; yieldPct: number };
+  };
+  nav: {
+    total: number;
+    senior: number;
+    junior: number;
+    unallocated: number;
+    seniorSupply: number;
+    juniorSupply: number;
+    seniorPx: number;
+    juniorPx: number;
+  };
+}
 
-// metallic palette — gold / silver / platinum foils + gunmetal surfaces
-const GOLD_FOIL = "linear-gradient(135deg,#7a5d18 0%,#d9b24a 22%,#fff0bf 46%,#caa23a 60%,#8a6d1f 80%,#e8c45a 100%)";
-const SILVER_FOIL = "linear-gradient(135deg,#6f727a 0%,#c8ccd4 26%,#ffffff 48%,#aeb2bb 64%,#7e828b 82%,#d8dce3 100%)";
-const PLAT_FOIL = "linear-gradient(135deg,#7f858c 0%,#cfd6dd 30%,#ffffff 50%,#bcc4cd 66%,#8a9099 84%,#e3e8ee 100%)";
-const foilStyle = (img: string) => ({ backgroundImage: img, WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" } as const);
-// brushed-metal panel surface (subtle top bevel highlight)
-const PLATE = "linear-gradient(180deg,#15151b 0%,#0e0e13 100%)";
-const PLATE_ACTIVE = "linear-gradient(180deg,#20202a 0%,#15151c 100%)";
-const METAL_TINT: Record<string, string> = { Gold: "#e6c15a", Silver: "#c8ccd4", Platinum: "#dfe4ea", Palladium: "#b9b3a6" };
+const GOLD = "#C9A84C";
+const STEEL = "#7BA3C8";
+const GREEN = "#86efac";
+const RED = "#f0a39a";
+const DIM = "rgba(255,255,255,0.4)";
 
-const TICKERS: { key: TickerKey; role: string; seriesKey: keyof SeriesPoint; color: string; foil: string; unit: "usd" | "level" }[] = [
-  { key: "hgUSD", role: "senior · stable coupon", seriesKey: "hgUsdPx", color: "#aeb8c4", foil: SILVER_FOIL, unit: "usd" },
-  { key: "hgYIELD", role: "junior · levered carry", seriesKey: "hgYieldPx", color: "#e6c15a", foil: GOLD_FOIL, unit: "usd" },
-  { key: "hgMETAL", role: "exposure · managed index", seriesKey: "metalIndex", color: "#e7edf3", foil: PLAT_FOIL, unit: "level" },
-];
+function money(n: number, dp = 2): string {
+  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: dp, maximumFractionDigits: dp });
+}
 
-const fmtUsd = (n: number, d = 4) => `$${n.toFixed(d)}`;
-const fmtPct = (n: number) => `${n >= 0 ? "+" : ""}${n.toFixed(2)}%`;
-const cls = (...a: (string | false | undefined)[]) => a.filter(Boolean).join(" ");
-
-// ─────────────────────────── passcode gate ───────────────────────────
-function Gate({ onUnlock }: { onUnlock: () => void }) {
-  const [v, setV] = useState("");
-  const [err, setErr] = useState(false);
+function Delta({ d }: { d: number }) {
+  if (Math.abs(d) < 0.005) return <span style={{ color: DIM }}>▬ 0.00</span>;
+  const up = d > 0;
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#07070a] font-mono text-neutral-300">
-      <form
-        onSubmit={(e) => { e.preventDefault(); if (v === PASSCODE) { localStorage.setItem(STORAGE_KEY, "1"); onUnlock(); } else setErr(true); }}
-        className="w-80 rounded-lg border border-white/10 bg-[#0d0d11] p-6"
-      >
-        <div className="mb-1 text-xs uppercase tracking-[0.2em] text-neutral-500">hgMETAL terminal</div>
-        <div className="mb-4 text-sm text-neutral-400">restricted · enter passcode</div>
-        <input
-          autoFocus value={v} onChange={(e) => { setV(e.target.value); setErr(false); }}
-          type="password" placeholder="passcode"
-          className={cls("w-full rounded border bg-black px-3 py-2 text-sm outline-none", err ? "border-red-500" : "border-neutral-700 focus:border-neutral-500")}
-        />
-        {err && <div className="mt-2 text-xs text-red-400">incorrect</div>}
-        <button className="mt-4 w-full rounded bg-neutral-200 py-2 text-sm font-medium text-black hover:bg-white">unlock</button>
-      </form>
-    </div>
+    <span style={{ color: up ? GREEN : RED }}>
+      {up ? "▲" : "▼"} {up ? "+" : ""}
+      {d.toFixed(2)}
+    </span>
   );
 }
 
-// ─────────────────────────── chart ───────────────────────────
-function PriceChart({ data, color }: { data: { time: string; value: number }[]; color: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const chartRef = useRef<IChartApi | null>(null);
-  const seriesRef = useRef<ISeriesApi<"Area"> | null>(null);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    const chart = createChart(ref.current, {
-      layout: { background: { type: ColorType.Solid, color: "transparent" }, textColor: "#6b7280", fontFamily: "ui-monospace, monospace", fontSize: 11 },
-      grid: { vertLines: { color: "#16161c" }, horzLines: { color: "#16161c" } },
-      rightPriceScale: { borderColor: "#23232b" },
-      timeScale: { borderColor: "#23232b", timeVisible: false },
-      crosshair: { vertLine: { color: "#3f3f46", labelBackgroundColor: "#27272a" }, horzLine: { color: "#3f3f46", labelBackgroundColor: "#27272a" } },
-      width: ref.current.clientWidth, height: ref.current.clientHeight,
-    });
-    chartRef.current = chart;
-    const series = chart.addAreaSeries({ lineColor: color, topColor: color + "44", bottomColor: color + "05", lineWidth: 2, priceLineVisible: false });
-    seriesRef.current = series;
-    series.setData(data);
-    chart.timeScale().fitContent();
-    const ro = new ResizeObserver(() => { if (ref.current) chart.applyOptions({ width: ref.current.clientWidth, height: ref.current.clientHeight }); });
-    ro.observe(ref.current);
-    return () => { ro.disconnect(); chart.remove(); chartRef.current = null; seriesRef.current = null; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (seriesRef.current) {
-      seriesRef.current.applyOptions({ lineColor: color, topColor: color + "44", bottomColor: color + "05" });
-      seriesRef.current.setData(data);
-      chartRef.current?.timeScale().fitContent();
+function Gate({ onUnlock }: { onUnlock: () => void }) {
+  const [val, setVal] = useState("");
+  const [err, setErr] = useState(false);
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (val === PASSCODE) {
+      try {
+        sessionStorage.setItem(STORAGE_KEY, "1");
+      } catch {}
+      onUnlock();
+    } else {
+      setErr(true);
+      setVal("");
     }
-  }, [data, color]);
-
-  return <div ref={ref} className="h-full w-full" />;
+  };
+  return (
+    <form
+      onSubmit={submit}
+      className="rounded-lg border border-border/60 bg-background p-8 flex flex-col items-center gap-4 font-mono"
+    >
+      <p className="text-sm text-muted-foreground">
+        Live devnet terminal. Enter passcode to view.
+      </p>
+      <div className="flex items-center gap-2">
+        <input
+          autoFocus
+          type="password"
+          value={val}
+          onChange={(e) => {
+            setVal(e.target.value);
+            setErr(false);
+          }}
+          placeholder="passcode"
+          className="rounded border border-border/60 bg-foreground/[0.03] px-3 py-1.5 text-sm font-mono outline-none focus:border-foreground/40"
+        />
+        <button
+          type="submit"
+          className="rounded px-3 py-1.5 text-xs font-semibold transition-opacity hover:opacity-80"
+          style={{ backgroundColor: GOLD, color: "var(--navy)" }}
+        >
+          unlock →
+        </button>
+      </div>
+      {err && <p className="text-xs" style={{ color: RED }}>incorrect passcode</p>}
+    </form>
+  );
 }
 
-// ─────────────────────────── terminal ───────────────────────────
-export function HgMetalTerminal() {
-  const [unlocked, setUnlocked] = useState(false);
-  const [series, setSeries] = useState<SeriesPoint[]>([]);
-  const [hedged, setHedged] = useState<any>(null);
-  const [index, setIndex] = useState<any>(null);
-  const [sel, setSel] = useState<TickerKey>("hgMETAL");
-  const [now, setNow] = useState("");
+function Terminal() {
+  const [data, setData] = useState<VaultData | null>(null);
+  const [err, setErr] = useState<string>("");
+  const [tick, setTick] = useState(0);
+  const prevPrices = useRef<Record<string, number>>({});
+  const prevTotal = useRef<number | null>(null);
 
-  useEffect(() => { setUnlocked(localStorage.getItem(STORAGE_KEY) === "1"); }, []);
-  useEffect(() => { const t = setInterval(() => setNow(new Date().toUTCString().slice(17, 25) + " UTC"), 1000); return () => clearInterval(t); }, []);
-
-  useEffect(() => { fetch("/replay_series.json").then((r) => r.json()).then((j) => setSeries(j.series ?? [])).catch(() => {}); }, []);
-  const pull = useCallback(() => {
-    fetch("/api/hgmetal-vault").then((r) => r.json()).then(setHedged).catch(() => {});
-    fetch("/api/index-vault").then((r) => r.json()).then(setIndex).catch(() => {});
+  const poll = useCallback(async () => {
+    try {
+      const r = await fetch("/api/hgmetal-vault", { cache: "no-store" });
+      const j = (await r.json()) as VaultData;
+      if (!j.ok) throw new Error("vault read failed");
+      setData((cur) => {
+        if (cur) {
+          prevPrices.current = Object.fromEntries(cur.metals.map((m) => [m.sym, m.priceUsd]));
+          prevTotal.current = cur.nav.total;
+        }
+        return j;
+      });
+      setErr("");
+      setTick((t) => t + 1);
+    } catch {
+      setErr("connection lost, retrying");
+    }
   }, []);
-  useEffect(() => { if (!unlocked) return; pull(); const t = setInterval(pull, REFRESH_MS); return () => clearInterval(t); }, [unlocked, pull]);
 
-  const chartData = useMemo(() => {
-    const def = TICKERS.find((t) => t.key === sel)!;
-    return series.map((p) => ({ time: p.date, value: Number(p[def.seriesKey]) }));
-  }, [series, sel]);
+  useEffect(() => {
+    poll();
+    const id = setInterval(poll, REFRESH_MS);
+    return () => clearInterval(id);
+  }, [poll]);
 
-  const quote = useCallback((key: TickerKey) => {
-    const def = TICKERS.find((t) => t.key === key)!;
-    const n = series.length;
-    const last = n ? Number(series[n - 1][def.seriesKey]) : 0;
-    const prev = n > 1 ? Number(series[n - 2][def.seriesKey]) : last;
-    let px = last, chg = prev ? (last / prev - 1) * 100 : 0, apr = 0;
-    if (key === "hgUSD") { px = hedged?.tickers?.hgUSD?.priceUsd ?? last; apr = hedged?.tickers?.hgUSD?.aprPct ?? series[n - 1]?.hgUsdApr ?? 5; }
-    if (key === "hgYIELD") { px = hedged?.tickers?.hgYIELD?.priceUsd ?? last; apr = hedged?.tickers?.hgYIELD?.aprPct ?? series[n - 1]?.hgYieldApr ?? 0; }
-    if (key === "hgMETAL") { px = index?.sharePriceUsd || last; chg = hedged?.tickers?.hgMETAL?.change24hPct ?? chg; apr = hedged?.tickers?.hgMETAL?.yieldPct ?? 3.5; }
-    return { px, chg, apr, color: def.color, foil: def.foil, role: def.role, unit: def.unit };
-  }, [series, hedged, index]);
+  if (!data) {
+    return (
+      <div className="rounded-lg border border-border/60 bg-[var(--navy)] p-6 font-mono text-sm" style={{ color: DIM }}>
+        {err || "connecting to devnet…"}
+      </div>
+    );
+  }
 
-  if (!unlocked) return <Gate onUnlock={() => setUnlocked(true)} />;
-
-  const selQ = quote(sel);
-  const fleet = hedged?.fleet;
+  const navDelta = prevTotal.current === null ? 0 : data.nav.total - prevTotal.current;
+  const Row = ({ children }: { children: React.ReactNode }) => (
+    <div className="grid grid-cols-[3rem_7rem_6rem_3rem_6rem_1fr] gap-2 items-center py-0.5">{children}</div>
+  );
 
   return (
     <div
-      className="flex min-h-screen flex-col font-mono text-[13px] text-neutral-300"
-      style={{ backgroundImage: "repeating-linear-gradient(90deg,rgba(255,255,255,0.014) 0 1px,transparent 1px 3px), radial-gradient(120% 90% at 50% -10%,#16161d 0%,#0b0b0f 55%,#060608 100%)" }}
+      className="rounded-lg border border-white/10 bg-[var(--navy)] p-5 sm:p-6 font-mono text-xs sm:text-[13px] overflow-x-auto"
+      style={{ color: "rgba(255,255,255,0.82)" }}
     >
-      <header
-        className="flex items-center justify-between border-b border-white/10 px-4 py-2"
-        style={{ backgroundImage: PLATE, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)" }}
-      >
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-bold tracking-[0.12em]" style={foilStyle(GOLD_FOIL)}>hgMETAL</span>
-          <span className="text-[11px] uppercase tracking-[0.2em] text-neutral-500">terminal · devnet</span>
-        </div>
-        <div className="flex items-center gap-4 text-[11px] text-neutral-500">
-          <span className={cls("flex items-center gap-1", hedged?.ok ? "text-emerald-400" : "text-amber-400")}>
-            <span className="h-1.5 w-1.5 rounded-full bg-current" /> {hedged?.ok ? "live" : "connecting"}
-          </span>
-          <span>{now}</span>
-        </div>
-      </header>
-
-      <div className="flex border-b border-white/10">
-        {TICKERS.map((t) => {
-          const q = quote(t.key);
-          const active = sel === t.key;
-          return (
-            <button key={t.key} onClick={() => setSel(t.key)}
-              className={cls("flex-1 border-r border-white/5 px-4 py-2 text-left transition-colors", !active && "hover:bg-white/[0.02]")}
-              style={active ? { backgroundImage: PLATE_ACTIVE, boxShadow: `inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -2px 0 0 ${q.color}` } : undefined}>
-              <div className="flex items-center justify-between">
-                <span className="font-bold tracking-wide" style={foilStyle(q.foil)}>{t.key}</span>
-                <span className={cls("text-xs", q.chg >= 0 ? "text-emerald-400" : "text-red-400")}>{fmtPct(q.chg)}</span>
-              </div>
-              <div className="mt-0.5 flex items-center justify-between text-xs text-neutral-400">
-                <span>{q.unit === "usd" ? fmtUsd(q.px) : q.px.toFixed(2)}</span>
-                <span className="text-neutral-600">{t.role.split(" · ")[0]}</span>
-              </div>
-            </button>
-          );
-        })}
+      {/* header */}
+      <div className="flex items-center justify-between mb-3 whitespace-nowrap">
+        <span style={{ color: GOLD }} className="font-bold">
+          hg<span className="text-white">METAL</span> · devnet vault
+        </span>
+        <span style={{ color: DIM }}>
+          <span style={{ color: GREEN }}>●</span> live · {new Date(data.fetchedAt).toISOString().slice(11, 19)} · #{tick}
+        </span>
+      </div>
+      <div style={{ color: DIM }} className="mb-3 truncate">
+        vault {data.vault.slice(0, 6)}…{data.vault.slice(-4)} · program {data.program.slice(0, 6)}…{data.program.slice(-4)}
       </div>
 
-      <div className="flex flex-1 flex-col lg:flex-row">
-        <div className="flex flex-1 flex-col border-b border-white/10 lg:border-b-0 lg:border-r">
-          <div className="flex items-baseline justify-between px-4 py-2">
-            <div>
-              <span className="text-base font-bold tracking-wide" style={foilStyle(selQ.foil)}>{sel}</span>
-              <span className="ml-2 text-[11px] uppercase tracking-wider text-neutral-500">{selQ.role}</span>
+      {/* 3-ticker tape */}
+      {data.tickers && (
+        <div className="grid grid-cols-3 gap-2 mb-2">
+          {([
+            { k: "hgMETAL", color: GOLD, top: `idx ${data.tickers.hgMETAL.change24hPct >= 0 ? "+" : ""}${data.tickers.hgMETAL.change24hPct.toFixed(2)}% 24h`, apr: `${data.tickers.hgMETAL.yieldPct.toFixed(1)}% yield` },
+            { k: "hgUSD", color: STEEL, top: `$${data.tickers.hgUSD.priceUsd.toFixed(4)}`, apr: `${data.tickers.hgUSD.aprPct.toFixed(1)}% APR` },
+            { k: "hgYIELD", color: GREEN, top: `$${data.tickers.hgYIELD.priceUsd.toFixed(4)}`, apr: `${data.tickers.hgYIELD.aprPct >= 0 ? "+" : ""}${data.tickers.hgYIELD.aprPct.toFixed(1)}% APR` },
+          ] as const).map((t) => (
+            <div key={t.k} className="rounded border border-white/10 px-2 py-1.5">
+              <div style={{ color: t.color }} className="font-bold text-[11px] sm:text-xs">{t.k}</div>
+              <div className="text-white text-[11px] sm:text-xs">{t.top}</div>
+              <div style={{ color: DIM }} className="text-[10px] sm:text-[11px]">{t.apr}</div>
             </div>
-            <div className="flex items-baseline gap-3">
-              <span className="text-xl font-semibold tracking-wide" style={foilStyle(selQ.foil)}>{selQ.unit === "usd" ? fmtUsd(selQ.px) : selQ.px.toFixed(2)}</span>
-              <span className={cls("text-sm", selQ.chg >= 0 ? "text-emerald-400" : "text-red-400")}>{fmtPct(selQ.chg)}</span>
-            </div>
-          </div>
-          <div className="min-h-[300px] flex-1 px-2 pb-2">
-            {chartData.length ? <PriceChart data={chartData} color={selQ.color} /> : <div className="flex h-full items-center justify-center text-neutral-600">loading series…</div>}
-          </div>
-          <div className="border-t border-white/10 px-4 py-1.5 text-[11px] text-neutral-500">
-            {series.length}d history · {sel === "hgMETAL" ? "base-100 metal index" : "share NAV"} · live overlay {REFRESH_MS / 1000}s
-          </div>
+          ))}
         </div>
+      )}
+      <div className="border-t border-white/10 my-2" />
 
-        <aside className="w-full shrink-0 lg:w-[360px]" style={{ backgroundImage: PLATE, boxShadow: "inset 1px 0 0 rgba(255,255,255,0.05)" }}>
-          <DetailPanel sel={sel} q={selQ} hedged={hedged} index={index} />
-        </aside>
+      {/* metals */}
+      <Row>
+        <span style={{ color: DIM }}>METAL</span>
+        <span style={{ color: DIM }}>PRICE</span>
+        <span style={{ color: DIM }}>Δ</span>
+        <span style={{ color: DIM }}>WT</span>
+        <span style={{ color: DIM }}>BAL</span>
+        <span style={{ color: DIM }} className="text-right">VALUE</span>
+      </Row>
+      {data.metals.map((m) => {
+        const d = m.priceUsd - (prevPrices.current[m.sym] ?? m.priceUsd);
+        return (
+          <Row key={m.sym}>
+            <span className="text-white">{m.sym}</span>
+            <span>{money(m.priceUsd)}</span>
+            <Delta d={d} />
+            <span style={{ color: DIM }}>{m.weightPct}%</span>
+            <span style={{ color: DIM }}>{m.balance.toFixed(2)}</span>
+            <span className="text-right text-white">{money(m.valueUsd)}</span>
+          </Row>
+        );
+      })}
+
+      <div className="border-t border-white/10 my-2" />
+      <div className="flex justify-between py-0.5">
+        <span style={{ color: DIM }}>basket (live marks)</span>
+        <span className="text-white">{money(data.basketLiveValue)}</span>
+      </div>
+      <div className="flex justify-between py-0.5">
+        <span style={{ color: DIM }}>usdc reserve</span>
+        <span className="text-white">{money(data.usdcReserve)}</span>
       </div>
 
-      <footer className="grid grid-cols-2 gap-px border-t border-white/10 bg-white/10 text-[11px] md:grid-cols-4">
-        <Cell label="researcher · carry" value={fleet ? `${(fleet.researcher.carryPct ?? 0).toFixed(1)}%` : "—"} tone={fleet?.researcher?.signal === "negative" ? "bad" : fleet?.researcher?.signal === "thin" ? "warn" : "good"} sub={fleet?.researcher?.signal} />
-        <Cell label="riskwatcher · liq buffer" value={fleet ? `${fleet.riskwatcher.liqBufferPct}%` : "—"} tone={fleet?.riskwatcher?.ok ? "good" : "bad"} sub={`${fleet?.riskwatcher?.leverage ?? "—"}x`} />
-        <Cell label="treasury · senior cover" value={fleet ? `${fleet.treasury.coverageX}x` : "—"} tone={fleet?.treasury?.seniorCoverable ? "good" : "warn"} sub={`jr ${fleet?.treasury?.juniorAprPct ?? "—"}%`} />
-        <Cell label="orchestrator" value={fleet ? fleet.decision.split(" — ")[0] : "—"} tone={fleet?.decision?.startsWith("MAINTAIN") ? "good" : fleet?.decision?.startsWith("HOLD") ? "bad" : "warn"} sub={fleet?.decision?.split(" — ")[1]} />
-      </footer>
+      <div className="border-t border-white/10 my-2" />
+      {/* tranches */}
+      <div className="grid grid-cols-[8rem_1fr_6rem] gap-2 py-0.5" style={{ color: DIM }}>
+        <span>TRANCHE</span>
+        <span>NAV</span>
+        <span className="text-right">SHARE PX</span>
+      </div>
+      <div className="grid grid-cols-[8rem_1fr_6rem] gap-2 py-0.5">
+        <span style={{ color: STEEL }}>hgUSD · senior</span>
+        <span className="text-white">{money(data.nav.senior)}</span>
+        <span className="text-right" style={{ color: DIM }}>{data.nav.seniorPx.toFixed(4)}</span>
+      </div>
+      <div className="grid grid-cols-[8rem_1fr_6rem] gap-2 py-0.5">
+        <span style={{ color: GOLD }}>hgYIELD · junior</span>
+        <span className="text-white">{money(data.nav.junior)}</span>
+        <span className="text-right" style={{ color: DIM }}>{data.nav.juniorPx.toFixed(2)}</span>
+      </div>
+      <div className="grid grid-cols-[8rem_1fr_6rem] gap-2 py-0.5">
+        <span style={{ color: DIM }}>unallocated</span>
+        <span style={{ color: DIM }}>{money(data.nav.unallocated)}</span>
+        <span />
+      </div>
+
+      <div className="border-t border-white/10 my-2" />
+      <div className="flex justify-between items-center py-0.5">
+        <span className="text-white font-bold">TOTAL NAV (on-chain)</span>
+        <span className="text-white font-bold">
+          {money(data.nav.total)} <Delta d={navDelta} />
+        </span>
+      </div>
+      <p style={{ color: DIM }} className="mt-3 text-[11px] leading-relaxed">
+        Prices stream live from Pyth. The on-chain NAV is the vault&apos;s last cached
+        value; it advances when the keeper writes an update. Basket tokens are devnet
+        mocks priced at real feeds. Public devnet data.
+      </p>
+      {err && <p style={{ color: RED }} className="mt-1 text-[11px]">{err}</p>}
     </div>
   );
 }
 
-function Cell({ label, value, sub, tone }: { label: string; value: string; sub?: string; tone: "good" | "warn" | "bad" }) {
-  const c = tone === "good" ? "text-emerald-400" : tone === "warn" ? "text-amber-400" : "text-red-400";
-  return (
-    <div className="px-4 py-2" style={{ backgroundImage: PLATE, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)" }}>
-      <div className="text-[10px] uppercase tracking-wider text-neutral-600">{label}</div>
-      <div className={cls("text-sm", c)}>{value}</div>
-      {sub && <div className="truncate text-[10px] text-neutral-500">{sub}</div>}
-    </div>
-  );
-}
-
-function Row({ k, v, accent }: { k: string; v: string; accent?: string }) {
-  return (
-    <div className="flex items-center justify-between border-b border-white/5 py-1.5">
-      <span className="text-neutral-500">{k}</span>
-      <span className={accent ?? "text-neutral-200"}>{v}</span>
-    </div>
-  );
-}
-
-function DetailPanel({ sel, q, hedged, index }: { sel: TickerKey; q: any; hedged: any; index: any }) {
-  return (
-    <div className="px-4 py-3">
-      <div className="mb-2 text-[11px] uppercase tracking-[0.2em] text-neutral-500">{sel} · detail</div>
-      {sel === "hgUSD" && (
-        <div>
-          <Row k="share price" v={fmtUsd(q.px)} accent="text-emerald-400" />
-          <Row k="coupon (target APR)" v={`${q.apr.toFixed(1)}%`} />
-          <Row k="tranche NAV" v={hedged ? fmtUsd(hedged.nav.senior, 2) : "—"} />
-          <Row k="supply" v={hedged ? hedged.nav.seniorSupply.toLocaleString() : "—"} />
-          <Row k="loss waterfall" v="last to lose" accent="text-emerald-400" />
-          <p className="mt-3 text-[11px] leading-relaxed text-neutral-500">Senior tranche of the hedged metals-carry book. Stable coupon, paid first; the junior absorbs losses before it.</p>
-        </div>
-      )}
-      {sel === "hgYIELD" && (
-        <div>
-          <Row k="share price" v={fmtUsd(q.px)} accent="text-amber-400" />
-          <Row k="realized APR" v={`${q.apr.toFixed(1)}%`} accent={q.apr >= 0 ? "text-amber-400" : "text-red-400"} />
-          <Row k="tranche NAV" v={hedged ? fmtUsd(hedged.nav.junior, 2) : "—"} />
-          <Row k="supply" v={hedged ? hedged.nav.juniorSupply.toLocaleString() : "—"} />
-          <Row k="loss waterfall" v="first loss" accent="text-amber-400" />
-          <p className="mt-3 text-[11px] leading-relaxed text-neutral-500">Junior tranche · levered residual of the carry. Absorbs NAV and APR variance first; higher target return for the risk.</p>
-        </div>
-      )}
-      {sel === "hgMETAL" && (
-        <div>
-          <Row k="share price (off-chain NAV)" v={index ? fmtUsd(index.sharePriceUsd) : "—"} accent="text-sky-400" />
-          <Row k="index NAV" v={index ? fmtUsd(index.navUsd, 2) : "—"} />
-          <Row k="supply" v={index ? `${index.supply} hgMETAL` : "—"} />
-          <Row k="24h" v={fmtPct(q.chg)} accent={q.chg >= 0 ? "text-emerald-400" : "text-red-400"} />
-          {index?.anyStale && <div className="py-1 text-[11px] text-amber-400">⚠ prices weekend-stale (display only)</div>}
-          <div className="mt-3 mb-1 text-[10px] uppercase tracking-wider text-neutral-600">basket · current vs rebalancer target</div>
-          <div className="grid grid-cols-[1fr_auto_auto] gap-x-3 text-[11px]">
-            <span className="text-neutral-600">metal</span><span className="text-right text-neutral-600">now</span><span className="text-right text-neutral-600">target</span>
-            {(index?.legs ?? []).map((l: any) => {
-              const drift = l.weightPct - l.targetPct;
-              return (
-                <div key={l.sym} className="contents">
-                  <span className="border-t border-white/5 py-1 font-medium" style={{ color: METAL_TINT[l.name] ?? "#d4d4d8" }}>{l.name}</span>
-                  <span className="border-t border-white/5 py-1 text-right text-neutral-200">{l.weightPct.toFixed(1)}%</span>
-                  <span className={cls("border-t border-white/5 py-1 text-right", Math.abs(drift) > 3 ? "text-amber-400" : "text-neutral-400")}>{l.targetPct.toFixed(1)}%</span>
-                </div>
-              );
-            })}
-          </div>
-          {index && <div className="mt-2 text-[11px] text-neutral-500">max drift {index.maxDriftBps?.toFixed(0)} bps · fleet posts smart-beta targets on-chain</div>}
-          <p className="mt-3 text-[11px] leading-relaxed text-neutral-500">Managed metals index · oracle-free in-kind. Weights are risk-weighted (inverse-vol) with a gold/silver tilt, rebalanced by the autonomous fleet.</p>
-        </div>
-      )}
-    </div>
-  );
+export function HgMetalTerminal() {
+  const [unlocked, setUnlocked] = useState(false);
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem(STORAGE_KEY) === "1") setUnlocked(true);
+    } catch {}
+  }, []);
+  return unlocked ? <Terminal /> : <Gate onUnlock={() => setUnlocked(true)} />;
 }
