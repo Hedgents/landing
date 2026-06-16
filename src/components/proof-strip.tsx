@@ -7,7 +7,7 @@ const ease = [0.25, 0.1, 0.25, 1.0] as const;
 // hgMETAL-forward proof. The fleet is one credibility item (the proven engine),
 // not the headline.
 const STATS = [
-  { label: "hgMETAL net carry", value: "~10%", sub: "venue-verified · 30-day realized", gold: true },
+  { label: "hgMETAL net carry", value: "~5-8%", sub: "venue-verified · recent realized", gold: true },
   { label: "Three-token product", value: "live on devnet", sub: "hgUSD · hgYIELD · hgMETAL · real Pyth" },
   { label: "Proven engine", value: "live on mainnet", sub: "the autonomous fleet · real capital" },
   { label: "Strategies auditable", value: "open source", sub: "github.com/Hedgents" },

@@ -34,7 +34,7 @@ export function CTA() {
             style={{ color: "rgba(255,255,255,0.45)" }}
           >
             hgMETAL is live on devnet: buy and sell all three tokens with test
-            USDC, backed by a venue-verified carry track record. We&apos;re
+            USDC, backed by venue-verified carry on Hyperliquid. We&apos;re
             onboarding early allocators and partners ahead of the live-capital
             launch.
           </p>
@@ -65,7 +65,7 @@ export function CTA() {
             className="mt-10 font-mono text-[10px] uppercase tracking-widest"
             style={{ color: "rgba(255,255,255,0.15)" }}
           >
-            hgMETAL live on devnet · ~10% venue-verified carry · delta-neutral
+            hgMETAL live on devnet · ~5-8% venue-verified carry · delta-neutral
           </p>
         </motion.div>
       </div>

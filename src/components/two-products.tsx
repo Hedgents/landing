@@ -12,7 +12,7 @@ const PRODUCTS = [
     serif: true,
     tagline: "On-chain structured metals yield.",
     body:
-      "A tokenized metals basket hedged into market-neutral carry, then tranched: hgUSD takes a stable senior coupon, hgYIELD takes the levered, first-loss residual. The carry is harvested from metals-perp funding and is venue-verified at roughly 10% on a 30-day realized basis.",
+      "A tokenized metals basket hedged into market-neutral carry, then tranched: hgUSD takes a stable senior coupon, hgYIELD takes the levered, first-loss residual. The carry is harvested from metals-perp funding and is venue-verified at roughly 5-8% on a recent realized basis.",
     points: ["hgUSD · senior · stable coupon", "hgYIELD · junior · variable, first-loss", "hgMETAL · unhedged metals exposure"],
     href: "/hgmetal",
     cta: "Explore hgMETAL →",

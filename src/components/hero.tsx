@@ -85,7 +85,7 @@ export function Hero() {
           <span style={{ color: "rgba(255,255,255,0.85)" }}>stable senior coupon</span>{" "}
           and a{" "}
           <span style={{ color: "rgba(255,255,255,0.85)" }}>levered junior</span>.
-          The carry is venue-verified, roughly 10% on a 30-day realized basis.
+          The carry is venue-verified, roughly 5-8% on a recent realized basis.
         </motion.p>
         <motion.p
           {...fade(0.45)}

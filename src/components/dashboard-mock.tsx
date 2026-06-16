@@ -49,7 +49,7 @@ const METALS = ["gold", "silver", "platinum", "palladium"];
 // hgMETAL product mock for the hero — illustrative; the live numbers are at
 // terminal.hedgents.com. The fleet is the engine, not the headline.
 export function DashboardMock() {
-  const carryLine = useMemo(() => makeSparkline(10.2, 28), []);
+  const carryLine = useMemo(() => makeSparkline(6.5, 28), []);
   return (
     <div className="w-full max-w-lg select-none">
       {/* Browser chrome */}
@@ -88,7 +88,7 @@ export function DashboardMock() {
           <div className="flex items-end justify-between mb-2">
             <div>
               <div className="font-mono text-[9px] uppercase tracking-widest mb-1" style={{ color: "rgba(255,255,255,0.3)" }}>Net basket carry</div>
-              <div className="font-mono text-2xl font-bold" style={{ color: "#C9A84C" }}>~10%</div>
+              <div className="font-mono text-2xl font-bold" style={{ color: "#C9A84C" }}>~5-8%</div>
             </div>
             <div className="text-right">
               <div className="font-mono text-[9px]" style={{ color: "rgba(255,255,255,0.2)" }}>delta-neutral</div>

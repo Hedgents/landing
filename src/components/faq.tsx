@@ -12,7 +12,7 @@ const FAQS = [
   },
   {
     q: "What is hgMETAL?",
-    a: "hgMETAL is the family of tokens. The basket is four precious metals (gold, silver, platinum, palladium) carried with a hedge so the spread, not the price swing, drives the return. hgUSD is the senior tranche: a steady ~5% coupon at ~$1.00/share, defended by a 4.5% reserve floor. hgYIELD is the levered junior tranche: first-loss, ~$1.15/share, designed for ~15%. The hgMETAL index token itself is an oracle-free, in-kind metals index with no yield overlay, re-seeded to roughly $1,000,000 NAV across 10,000 units (~$100 each). Net basket carry is around 10%, venue-verified on a 30-day realized basis.",
+    a: "hgMETAL is the family of tokens. The basket is four precious metals (gold, silver, platinum, palladium) carried with a hedge so the spread, not the price swing, drives the return. hgUSD is the senior tranche: a steady ~5% coupon at ~$1.00/share, defended by a 4.5% reserve floor. hgYIELD is the levered junior tranche: first-loss, ~$1.15/share, designed for ~15%. The hgMETAL index token itself is an oracle-free, in-kind metals index with no yield overlay, re-seeded to roughly $1,000,000 NAV across 10,000 units (~$100 each). Net basket carry runs around 5-8%, venue-verified on a recent realized basis and moving with funding.",
   },
   {
     q: "How does the senior tranche stay protected?",
