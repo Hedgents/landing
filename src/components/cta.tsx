@@ -33,9 +33,10 @@ export function CTA() {
             className="text-base leading-relaxed mb-10 mx-auto max-w-xl"
             style={{ color: "rgba(255,255,255,0.45)" }}
           >
-            hgMETAL is in private beta on devnet, with a venue-verified carry
-            track record. We&apos;re onboarding early allocators and partners ahead
-            of the live-capital launch.
+            hgMETAL is live on devnet: buy and sell all three tokens with test
+            USDC, backed by a venue-verified carry track record. We&apos;re
+            onboarding early allocators and partners ahead of the live-capital
+            launch.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -47,7 +48,7 @@ export function CTA() {
               Request access →
             </a>
             <a
-              href="https://github.com/Hedgents/fleet"
+              href="https://terminal.hedgents.com"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center rounded border px-8 py-3 font-mono text-sm transition-colors hover:border-white/50"
@@ -56,7 +57,7 @@ export function CTA() {
                 color: "rgba(255,255,255,0.5)",
               }}
             >
-              View source on GitHub →
+              Try the live terminal →
             </a>
           </div>
 

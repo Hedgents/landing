@@ -57,9 +57,15 @@ export function DashboardMock() {
         <span className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
         <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
         <span className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
-        <span className="ml-3 flex-1 rounded px-3 py-0.5 font-mono text-[10px] text-center" style={{ backgroundColor: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.25)" }}>
+        <a
+          href="https://terminal.hedgents.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ml-3 flex-1 rounded px-3 py-0.5 font-mono text-[10px] text-center transition-colors hover:text-white/60"
+          style={{ backgroundColor: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.25)" }}
+        >
           terminal.hedgents.com / hgMETAL
-        </span>
+        </a>
       </div>
       {/* Body */}
       <div className="rounded-b-xl overflow-hidden" style={{ backgroundColor: "rgba(8, 8, 20, 0.97)", border: "1px solid rgba(201,168,76,0.15)", borderTop: "none" }}>

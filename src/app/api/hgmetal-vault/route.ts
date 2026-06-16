@@ -13,7 +13,7 @@ export const revalidate = 0;
 
 const RPC = "https://api.devnet.solana.com";
 const HERMES = "https://hermes.pyth.network";
-const VAULT = "F4jMjSpNviUHmKLtfgHRY9GDg1czYuey4XUsXs45c8T4";
+const VAULT = "51q5A3wx53UjoFco8Zwt3zesNn2ePpFd9TS2tW9gMYhP";
 
 const METALS = [
   { sym: "XAU", name: "Gold", feedId: "765d2ba906dbc32ca17cc11f5310a89e9ee1f6420508c63861f2f8ba4ee34bb2" },
@@ -166,7 +166,9 @@ export async function GET() {
     // ── live HL carry (for implied tranche APRs) + hgMETAL index 24h ──
     // Weighted: gold/silver-heavy, Pt/Pd small (thin OI caps).
     const CARRY_W: Record<string, number> = { GOLD: 0.45, SILVER: 0.35, PLATINUM: 0.1, PALLADIUM: 0.1 };
-    const ORO = 3.5, FEES = 1.5, HRS_YR = 24 * 365;
+    // hgMETAL is an in-kind metals INDEX with no yield overlay; basket carry is
+    // pure funding net of fees (no synthetic gold-lease yield add-on).
+    const FEES = 1.5, HRS_YR = 24 * 365;
     let basketCarryPct = 0, metalIndex24hPct = 0;
     try {
       const hr = await fetch("https://api.hyperliquid.xyz/info", {
@@ -183,7 +185,7 @@ export async function GET() {
         const w = CARRY_W[sym];
         if (!w || !ctx[i]) continue;
         const fundingAnn = Number(ctx[i].funding) * HRS_YR * 100;
-        basketCarryPct += w * (fundingAnn + (sym === "GOLD" ? ORO : 0));
+        basketCarryPct += w * fundingAnn;
         const mark = Number(ctx[i].markPx), prev = Number(ctx[i].prevDayPx);
         if (mark && prev) metalIndex24hPct += w * ((mark / prev - 1) * 100);
         wsum += w;
@@ -204,7 +206,7 @@ export async function GET() {
     const tickers = {
       hgUSD: { label: "senior", priceUsd: seniorSupply ? seniorNav / seniorSupply : 1, aprPct: SENIOR_TARGET },
       hgYIELD: { label: "junior", priceUsd: juniorSupply ? juniorNav / juniorSupply : 1, aprPct: juniorAprPct },
-      hgMETAL: { label: "exposure", change24hPct: metalIndex24hPct, yieldPct: ORO },
+      hgMETAL: { label: "index", change24hPct: metalIndex24hPct, yieldPct: 0 },
     };
 
     // ── fleet role view (mirrors the orchestrator's roles) ──────────
@@ -233,6 +235,8 @@ export async function GET() {
       fetchedAt: Date.now(),
       vault: VAULT,
       program: "5kQGqqconKPFXYwqMwQ6ynqB1ZRBmbAb4W7Hvh3KQcKi",
+      indexProgram: "6EQajY1dyrXGeZYD1EdcTUPPMSFFLyvDLnH544yq8QSG",
+      mockUsdcMint: "6sgKwTvosM3UybKZbi1qEi5TNm8pi3nhbdg4PXaiHwzs",
       metals,
       basketLiveValue,
       usdcReserve,

@@ -131,14 +131,16 @@ export function Hero() {
             Treasury fleet →
           </button>
           <a
-            href="mailto:contact@hedgents.com"
+            href="https://terminal.hedgents.com"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center justify-center rounded border px-6 py-2.5 font-mono text-sm transition-colors hover:border-white/50 hover:text-white"
             style={{
               borderColor: "rgba(255,255,255,0.2)",
               color: "rgba(255,255,255,0.6)",
             }}
           >
-            Talk to us →
+            Try the live terminal →
           </a>
         </motion.div>
         <VaultInviteModal open={vaultOpen} onClose={() => setVaultOpen(false)} />

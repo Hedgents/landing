@@ -12,7 +12,7 @@ import { CTA } from "@/components/cta";
 export const metadata: Metadata = {
   title: "Hedgents Fleet · autonomous USDC treasury management",
   description:
-    "An autonomous role-based agent fleet that runs vetted Solana yield strategies on your own hardware, your keys. Offered as a subscription.",
+    "An autonomous role-based agent fleet that runs vetted Solana yield strategies on your own hardware, your keys. The engine behind hgMETAL. Offered as a subscription.",
 };
 
 export default function FleetPage() {
@@ -22,7 +22,7 @@ export default function FleetPage() {
       <section className="relative px-6 pt-20 pb-12" style={{ backgroundColor: "var(--navy)" }}>
         <div className="mx-auto max-w-4xl">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] mb-4" style={{ color: "rgba(255,255,255,0.35)" }}>
-            Product · Treasury · Subscription
+            Infrastructure · the engine behind hgMETAL · also a subscription
           </p>
           <h1 className="font-serif font-bold text-white leading-tight" style={{ fontSize: "clamp(40px, 6vw, 72px)" }}>
             Hedgents Fleet

@@ -112,7 +112,17 @@ export function TwoProducts() {
           style={{ color: "rgba(255,255,255,0.3)" }}
         >
           Status: hgMETAL runs on devnet with a paper hedge and a venue-verified, backtested track record; live capital is the next milestone.
-          The fleet runs our own treasury live on mainnet and is being productized for subscribers. Both are early. We say so.
+          All three tokens are live to buy and sell with test USDC at{" "}
+          <a
+            href="https://terminal.hedgents.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline transition-colors hover:text-white"
+            style={{ color: "var(--gold)" }}
+          >
+            terminal.hedgents.com
+          </a>
+          . The fleet runs our own treasury live on mainnet and is being productized for subscribers. Both are early. We say so.
         </motion.p>
       </div>
     </section>

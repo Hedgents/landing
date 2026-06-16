@@ -25,17 +25,18 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Hedgents · Institutional DeFi, Autonomous",
+  title: "Hedgents · structured on-chain metals yield",
   description:
-    "A self-hosted treasury management fleet of role-isolated autonomous agents on Solana. On-premise. Your hardware. Your keys.",
+    "hgMETAL: tranched, hedged-carry yield over a precious-metals basket on Solana. A senior coupon (hgUSD) and a levered junior (hgYIELD), powered by an autonomous agent fleet.",
   keywords: [
+    "hgMETAL",
+    "metals yield",
+    "structured products",
+    "tranching",
     "DeFi",
     "Solana",
-    "institutional",
-    "treasury",
+    "hedged carry",
     "autonomous agents",
-    "on-premise",
-    "self-hosted",
   ],
   icons: {
     icon: [
@@ -45,9 +46,9 @@ export const metadata: Metadata = {
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
-    title: "Hedgents · Institutional DeFi, Autonomous",
+    title: "Hedgents · structured on-chain metals yield",
     description:
-      "A self-hosted treasury management fleet of role-isolated autonomous agents on Solana.",
+      "hgMETAL: tranched, hedged-carry yield over a precious-metals basket on Solana, powered by an autonomous agent fleet.",
     url: "https://hedgents.com",
     type: "website",
   },

@@ -194,7 +194,7 @@ export function Benchmarks() {
           </div>
 
           <p className="mt-5 text-[10px] opacity-25">
-            Institutional rates: securitize.io · franklintempleton.com · circle.com/usyc, May 2026.
+            Institutional rates: securitize.io · franklintempleton.com · circle.com/usyc, June 2026.
             Hedgents: {live ? "fetched live from Kamino API, Solana RPC, and DeFiLlama." : "rates from Kamino API, Solana RPC, and DeFiLlama (loading…)."}
             {" "}Past performance of paper trading does not guarantee live deployment returns.
           </p>

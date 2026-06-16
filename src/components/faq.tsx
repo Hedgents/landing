@@ -8,7 +8,19 @@ const appleEase = [0.25, 0.1, 0.25, 1.0] as const;
 const FAQS = [
   {
     q: "What is Hedgents?",
-    a: "Hedgents is a self-hosted treasury management system for institutions. You install it on your own servers. It runs six specialized agents: three that execute yield strategies (leveraged staking, USDC lending, delta-neutral JLP), two that observe and emit risk/market signals, and an allocator that orchestrates capital between them. You stay in full control of your capital at all times.",
+    a: "Hedgents builds structured on-chain yield over precious metals. The flagship is hgMETAL: a hedged-carry basket of gold, silver, platinum, and palladium, split into a senior tranche (hgUSD, a steady ~5% coupon protected by a reserve floor) and a levered junior tranche (hgYIELD, first-loss, designed for ~15%). Underneath it all is our autonomous agent fleet, the engine that runs the vetted Solana strategies, holds the hedge, and rebalances. We also offer that fleet on its own as a self-hosted treasury subscription, on your hardware, your keys.",
+  },
+  {
+    q: "What is hgMETAL?",
+    a: "hgMETAL is the family of tokens. The basket is four precious metals (gold, silver, platinum, palladium) carried with a hedge so the spread, not the price swing, drives the return. hgUSD is the senior tranche: a steady ~5% coupon at ~$1.00/share, defended by a 4.5% reserve floor. hgYIELD is the levered junior tranche: first-loss, ~$1.15/share, designed for ~15%. The hgMETAL index token itself is an oracle-free, in-kind metals index with no yield overlay, re-seeded to roughly $1,000,000 NAV across 10,000 units (~$100 each). Net basket carry is around 10%, venue-verified on a 30-day realized basis.",
+  },
+  {
+    q: "How does the senior tranche stay protected?",
+    a: "Two distinct buffers. A junior-windfall reserve war-chest skims junior returns above ~30% APR into an accounting-only reserve that defends the senior 4.5% floor and is later released to junior holders pro-rata (it never leaves the vault). Separately, an ops/insurance treasury holds ~15% idle USDC for redemption liquidity and hedge margin. Mint and redeem are forward-priced (you request, a keeper strikes NAV, then it settles) to prevent dilution, with a redemption gate that caps each window and charges a swing fee.",
+  },
+  {
+    q: "Can I try it?",
+    a: "Yes. There is a live demo on Solana devnet at https://terminal.hedgents.com. You can connect Phantom and buy or sell all three tokens with mock USDC, and there is a Treasury & Transparency screen showing the reserve and ops buffers. Honest status: this is devnet with a paper hedge. There is no live-capital track record yet, so treat everything you see as exercised on devnet and backtested, not as audited performance.",
   },
   {
     q: "Who is this for?",
@@ -132,12 +144,12 @@ export function FAQ() {
         >
           More questions?{" "}
           <a
-            href="https://github.com/Hedgents/fleet/discussions"
+            href="https://github.com/Hedgents"
             target="_blank"
             rel="noopener noreferrer"
             className="text-accent hover:underline font-mono"
           >
-            GitHub Discussions →
+            GitHub →
           </a>
         </motion.p>
       </div>

@@ -101,9 +101,20 @@ function Dash() {
             <span style={{ color: GOLD }} className="font-mono font-bold text-lg">hg<span className="text-white">METAL</span></span>
             <span style={{ color: DIM }} className="font-mono text-xs ml-2">fleet dashboard · devnet · paper hedge</span>
           </div>
-          <span style={{ color: DIM }} className="font-mono text-xs">
-            <span style={{ color: GREEN }}>●</span> live · {new Date(d.fetchedAt).toISOString().slice(11, 19)} · #{tick} · vault {d.vault.slice(0, 6)}…{d.vault.slice(-4)}
-          </span>
+          <div className="flex items-center gap-3 flex-wrap">
+            <a
+              href="https://terminal.hedgents.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center rounded px-2 py-1 font-mono text-[11px] font-semibold transition-opacity hover:opacity-80"
+              style={{ backgroundColor: GOLD, color: NAVY }}
+            >
+              buy / sell live on devnet →
+            </a>
+            <span style={{ color: DIM }} className="font-mono text-xs">
+              <span style={{ color: GREEN }}>●</span> live · {new Date(d.fetchedAt).toISOString().slice(11, 19)} · #{tick} · vault {d.vault.slice(0, 6)}…{d.vault.slice(-4)}
+            </span>
+          </div>
         </div>
 
         {/* tickers */}
@@ -111,7 +122,7 @@ function Dash() {
           <div className="rounded-xl border border-white/10 bg-black/20 p-4">
             <div style={{ color: GOLD }} className="font-mono font-bold">hgMETAL</div>
             <div className="text-white font-mono text-xl mt-1">{t.hgMETAL.change24hPct >= 0 ? "+" : ""}{t.hgMETAL.change24hPct.toFixed(2)}% <span className="text-xs" style={{ color: DIM }}>24h idx</span></div>
-            <div style={{ color: DIM }} className="font-mono text-xs mt-1">~{t.hgMETAL.yieldPct.toFixed(1)}% yield · metals exposure</div>
+            <div style={{ color: DIM }} className="font-mono text-xs mt-1">in-kind metals index · no yield overlay</div>
           </div>
           <div className="rounded-xl border border-white/10 bg-black/20 p-4">
             <div style={{ color: STEEL }} className="font-mono font-bold">hgUSD</div>

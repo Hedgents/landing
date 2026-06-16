@@ -116,7 +116,7 @@ export function HgMetalReplay() {
           color={GOLD}
           line1={`idx ${d.metalIndex.toFixed(1)}`}
           line2={`${metalChg >= 0 ? "+" : ""}${metalChg.toFixed(1)}% since start`}
-          sub="unhedged metals · price moves with metals + ~3.5% yield"
+          sub="unhedged in-kind metals index · price moves with metals · no yield overlay"
         />
         <Card
           name="hgUSD"

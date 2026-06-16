@@ -173,12 +173,21 @@ function Terminal() {
       <div style={{ color: DIM }} className="mb-3 truncate">
         vault {data.vault.slice(0, 6)}…{data.vault.slice(-4)} · program {data.program.slice(0, 6)}…{data.program.slice(-4)}
       </div>
+      <a
+        href="https://terminal.hedgents.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1 mb-3 rounded px-2 py-1 text-[11px] font-semibold transition-opacity hover:opacity-80"
+        style={{ backgroundColor: GOLD, color: "var(--navy)" }}
+      >
+        buy / sell live on devnet → terminal.hedgents.com
+      </a>
 
       {/* 3-ticker tape */}
       {data.tickers && (
         <div className="grid grid-cols-3 gap-2 mb-2">
           {([
-            { k: "hgMETAL", color: GOLD, top: `idx ${data.tickers.hgMETAL.change24hPct >= 0 ? "+" : ""}${data.tickers.hgMETAL.change24hPct.toFixed(2)}% 24h`, apr: `${data.tickers.hgMETAL.yieldPct.toFixed(1)}% yield` },
+            { k: "hgMETAL", color: GOLD, top: `idx ${data.tickers.hgMETAL.change24hPct >= 0 ? "+" : ""}${data.tickers.hgMETAL.change24hPct.toFixed(2)}% 24h`, apr: `in-kind index · no yield` },
             { k: "hgUSD", color: STEEL, top: `$${data.tickers.hgUSD.priceUsd.toFixed(4)}`, apr: `${data.tickers.hgUSD.aprPct.toFixed(1)}% APR` },
             { k: "hgYIELD", color: GREEN, top: `$${data.tickers.hgYIELD.priceUsd.toFixed(4)}`, apr: `${data.tickers.hgYIELD.aprPct >= 0 ? "+" : ""}${data.tickers.hgYIELD.aprPct.toFixed(1)}% APR` },
           ] as const).map((t) => (

@@ -73,7 +73,7 @@ function Hero() {
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-white/70 leading-relaxed">
             Metals-focused structured products on Solana, spanning gold, silver,
-            platinum, palladium and copper. Run by an autonomous, role-isolated
+            platinum and palladium. Run by an autonomous, role-isolated
             agent fleet that actively rebalances across cross-metal strategies,
             then tranches the output into senior and junior products.
           </p>
@@ -94,7 +94,7 @@ function Hero() {
               4-metal NAV proven on-chain
             </span>
             <span className="inline-flex items-center rounded px-3 py-1.5 font-mono text-xs text-white/55 border border-white/15">
-              Audited · 4 critical findings closed
+              31 on-chain tests · exercised end-to-end
             </span>
           </div>
         </motion.div>
@@ -107,7 +107,7 @@ function Hero() {
 
 const MAPPING: { primitive: string; v0: string; metals: string }[] = [
   { primitive: "Execution roles (sign)", v0: "stable-yield · hedgedjlp · onyc", metals: "gold-basis · cross-metal-pair · funding-capture" },
-  { primitive: "Researcher (read-only)", v0: "Kamino rates · Pyth · JLP yield", metals: "5 metal feeds · Flash funding · GLD/SLV + GLD/PT ratios" },
+  { primitive: "Researcher (read-only)", v0: "Kamino rates · Pyth · JLP yield", metals: "4 metal feeds · Hyperliquid funding · GLD/SLV + GLD/PT ratios" },
   { primitive: "Riskwatcher (read-only)", v0: "LTV · liquidation distance", metals: "basket tracking error · hedge delta · concentration" },
   { primitive: "Orchestrator (route)", v0: "regime-aware USDC allocator", metals: "regime-aware allocator across metal strategies" },
   { primitive: "Active rebalance", v0: "USDC between 3 DeFi slots", metals: "capital between metal strategies as regimes shift" },
@@ -169,7 +169,7 @@ function ProofScaleUp() {
       <p className="mt-6 font-serif italic text-lg text-foreground/70 max-w-3xl">
         “v0 proved an autonomous role-based fleet can actively rebalance on-chain
         capital. hgMETAL applies that same architecture to a multi-metal product:
-        a fleet of metal-strategy agents rebalancing across precious and industrial
+        a fleet of metal-strategy agents rebalancing across four precious
         metals, tranched into senior and junior products.”
       </p>
     </Section>
@@ -188,10 +188,10 @@ const PRODUCTS: {
 }[] = [
   {
     ticker: "hgMETAL",
-    name: "Exposure",
+    name: "Index",
     accent: GOLD,
-    tagline: "Diversified metals, native yield",
-    body: "An unhedged, multi-issuer metals basket with Oro Earn yield on the gold leg. One token instead of choosing between five tokenized gold issuers.",
+    tagline: "In-kind metals index, oracle-free",
+    body: "An oracle-free, in-kind index across four precious metals: gold, silver, platinum and palladium. Pure directional exposure with no yield overlay. One token instead of stitching together separate tokenized issuers.",
     who: "Long-term metals believers",
   },
   {
@@ -280,9 +280,9 @@ const AUTH: Record<Auth, { label: string; color: string }> = {
 const ROLES: { name: string; auth: Auth; role: string }[] = [
   { name: "gold-basis", auth: "signs", role: "Long basket, short XAU perp for delta-neutral carry" },
   { name: "cross-metal-pair", auth: "signs", role: "GLD/SLV + GLD/PT ratio mean-reversion" },
-  { name: "funding-capture", auth: "signs", role: "Sizes into extreme Flash v2 funding windows" },
+  { name: "funding-capture", auth: "signs", role: "Sizes into extreme Hyperliquid funding windows" },
   { name: "orchestrator", auth: "routes", role: "Regime-aware allocator across metal strategies" },
-  { name: "researcher", auth: "read", role: "5 metal feeds, funding rates, cross-metal ratios" },
+  { name: "researcher", auth: "read", role: "4 metal feeds, funding rates, cross-metal ratios" },
   { name: "riskwatcher", auth: "read", role: "Tracking error, hedge delta, concentration" },
 ];
 
@@ -301,7 +301,7 @@ function MetalsFleet() {
           Cross-metal strategy, role-isolated.
         </h2>
         <p className="mt-4 text-muted-foreground leading-relaxed max-w-2xl">
-          Five metal price feeds and multiple cross-metal strategy types make this a
+          Four metal price feeds and multiple cross-metal strategy types make this a
           real allocation problem, which is exactly what the fleet pattern is for. Each agent
           has one role and cannot exceed it. Execution daemons sign; observers can
           never move funds; the orchestrator routes but its binary cannot sign a
@@ -345,14 +345,16 @@ function MetalsFleet() {
 // ── Live on devnet ────────────────────────────────────────────────
 
 const PROGRAM_ID = "5kQGqqconKPFXYwqMwQ6ynqB1ZRBmbAb4W7Hvh3KQcKi";
+const INDEX_PROGRAM_ID = "6EQajY1dyrXGeZYD1EdcTUPPMSFFLyvDLnH544yq8QSG";
+const USDC_MINT = "6sgKwTvosM3UybKZbi1qEi5TNm8pi3nhbdg4PXaiHwzs";
 
 const PROOF_STATS: { label: string; value: string }[] = [
   { label: "Tranching program", value: "live on devnet" },
   { label: "Metals priced on-chain", value: "XAU · XAG · XPT · XPD" },
-  { label: "NAV proven in one cycle", value: "$39,924" },
+  { label: "10,000 units · ~$100/token", value: "~$1,000,000 NAV" },
   { label: "Oracle", value: "Pyth pull feeds" },
-  { label: "Hedge venue", value: "Flash v2 perps" },
-  { label: "Audit", value: "4 critical closed · 31 tests" },
+  { label: "Hedge venue", value: "Hyperliquid" },
+  { label: "On-chain tests", value: "31 · exercised end-to-end" },
 ];
 
 function LiveOnDevnet() {
@@ -372,11 +374,39 @@ function LiveOnDevnet() {
         <p className="mt-4 text-muted-foreground leading-relaxed max-w-2xl">
           The senior/junior tranching contract is deployed and exercised end-to-end:
           a four-metal basket valued against live Pyth feeds, deposits and redemptions
-          through the waterfall, and an independent audit whose four critical findings
-          are all closed. The on-chain foundation is real today; the multi-strategy
-          metals fleet on top of it is the scale-up in progress.
+          through the waterfall, and 31 on-chain tests covering the path. You can buy
+          and sell all three tokens right now with test USDC. The on-chain foundation
+          is real today; the multi-strategy metals fleet on top of it is the scale-up
+          in progress.
         </p>
       </motion.div>
+
+      <div className="mb-8 grid gap-3 md:grid-cols-3">
+        {[
+          {
+            title: "Junior-windfall reserve",
+            body: "A war-chest that skims junior windfalls above ~30% APR to defend the senior 4.5% floor, then releases pro-rata to junior. Accounting-only: it never leaves the vault.",
+          },
+          {
+            title: "Ops / insurance treasury",
+            body: "A ~15% idle-USDC buffer for redemption liquidity and hedge margin. Distinct from the reserve, sized to keep the gate open in stress.",
+          },
+          {
+            title: "Forward-priced mint / redeem",
+            body: "Requests settle at a keeper-struck NAV (anti-dilution), behind a redemption gate with a per-window cap and swing fee.",
+          },
+        ].map((m) => (
+          <div
+            key={m.title}
+            className="rounded-lg border border-border/60 bg-background p-5"
+          >
+            <p className="font-mono text-[11px] uppercase tracking-wider" style={{ color: GOLD }}>
+              {m.title}
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{m.body}</p>
+          </div>
+        ))}
+      </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {PROOF_STATS.map((s, i) => (
@@ -396,20 +426,31 @@ function LiveOnDevnet() {
         ))}
       </div>
 
-      <motion.a
-        href={`https://explorer.solana.com/address/${PROGRAM_ID}?cluster=devnet`}
-        target="_blank"
-        rel="noopener noreferrer"
+      <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5, ease }}
-        className="mt-6 inline-flex items-center gap-2 rounded border border-border/60 bg-background px-4 py-2.5 font-mono text-xs text-foreground/80 hover:border-border transition-colors break-all"
+        className="mt-6 flex flex-col gap-2"
       >
-        <span className="text-muted-foreground/60">program</span>
-        {PROGRAM_ID}
-        <span style={{ color: GOLD }}>↗</span>
-      </motion.a>
+        {[
+          { tag: "tranching", id: PROGRAM_ID },
+          { tag: "metals index", id: INDEX_PROGRAM_ID },
+          { tag: "test USDC mint", id: USDC_MINT },
+        ].map((e) => (
+          <a
+            key={e.id}
+            href={`https://explorer.solana.com/address/${e.id}?cluster=devnet`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded border border-border/60 bg-background px-4 py-2.5 font-mono text-xs text-foreground/80 hover:border-border transition-colors break-all"
+          >
+            <span className="text-muted-foreground/60">{e.tag}</span>
+            {e.id}
+            <span style={{ color: GOLD }}>↗</span>
+          </a>
+        ))}
+      </motion.div>
     </Section>
   );
 }
@@ -504,16 +545,18 @@ function Cta() {
             Metals, the way a fleet would run them.
           </h2>
           <p className="mt-4 text-white/60 max-w-xl mx-auto leading-relaxed">
-            hgMETAL is in private beta. The proof shipped on v0; the scale-up is
-            building now.
+            hgMETAL is live on devnet. Buy and sell all three tokens with test
+            USDC, right now. The proof shipped on v0; the scale-up is building now.
           </p>
           <div className="mt-8 flex items-center justify-center gap-3">
             <a
-              href="mailto:contact@hedgents.com?subject=hgMETAL access"
+              href="https://terminal.hedgents.com"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center rounded px-5 py-2.5 font-mono text-sm font-semibold transition-opacity hover:opacity-80"
               style={{ backgroundColor: GOLD, color: "var(--navy)" }}
             >
-              Request access →
+              Open the devnet terminal →
             </a>
             <a
               href="/"

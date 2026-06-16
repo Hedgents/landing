@@ -50,14 +50,20 @@ const RISKS = [
   {
     number: "08",
     label: "Regulatory + offering",
-    title: "Not registered. Not a fund. Closed beta.",
-    body: "Hedgents is an operator-run execution layer, not a registered investment vehicle. The closed beta records depositor shares as a tracked custody, with no securities registration, no audited financials, and no transfer restrictions enforced by an external agent. Regulatory frameworks for on-chain yield products are still forming; future rules may restrict access, require disclosures we cannot meet, or trigger an orderly unwind.",
+    title: "Not registered. Not a fund. Devnet stage.",
+    body: "Hedgents is an operator-run execution layer, not a registered investment vehicle. The hgMETAL tokens are live for buy/sell with test USDC on Solana devnet only (try it at terminal.hedgents.com); the fleet/treasury subscription records depositor shares as a tracked custody. Neither carries securities registration, audited financials, or transfer restrictions enforced by an external agent. Regulatory frameworks for on-chain yield products are still forming; future rules may restrict access, require disclosures we cannot meet, or trigger an orderly unwind.",
   },
   {
     number: "09",
     label: "Economics",
     title: "Two fee shapes, both negotiated.",
-    body: "Closed-beta vault depositors pay a performance fee of 10–20% on net gain above their high-water mark, taken at the end of each strategy cycle. The operator does not take a fee on returns that merely recover prior drawdowns. The exact rate is negotiated based on deposit size. Self-deployed clients (running their own Hedgents fleet on their own infrastructure) pay a one-time setup fee covering install, key ceremony, initial config, and a defined post-deploy support window; a premium tier extends this with ongoing incident consultation. Both are negotiated. No management fee on AUM, no on-chain entry or exit fee in either model. Operational costs (RPC, gas, swap slippage, infrastructure) are borne entirely by the operator and do not reduce depositor net gain.",
+    body: "Fleet/treasury depositors pay a performance fee of 10–20% on net gain above their high-water mark, taken at the end of each strategy cycle. The operator does not take a fee on returns that merely recover prior drawdowns. The exact rate is negotiated based on deposit size. Self-deployed clients (running their own Hedgents fleet on their own infrastructure) pay a one-time setup fee covering install, key ceremony, initial config, and a defined post-deploy support window; a premium tier extends this with ongoing incident consultation. Both are negotiated. No management fee on AUM, no on-chain entry or exit fee in either model. Operational costs (RPC, gas, swap slippage, infrastructure) are borne entirely by the operator and do not reduce depositor net gain.",
+  },
+  {
+    number: "10",
+    label: "hgMETAL tranches",
+    title: "Devnet stage, paper hedge, no live-capital track record.",
+    body: "The hgMETAL family (hgUSD senior, hgYIELD junior, hgMETAL in-kind metals index) is live on Solana devnet only, with a paper hedge: design targets and the ~10% net basket carry are venue-verified and backtested on Hyperliquid, not earned on live capital. Specific failure modes. (1) Tracking error: the in-kind index tracks a gold/silver/platinum/palladium basket; rebalancing, oracle-free in-kind accounting, and venue depth can drift the token from the underlying metals. (2) Funding compression: the senior coupon and junior return depend on basket carry; if Hyperliquid funding compresses or inverts, the spread can fall to zero and junior absorbs first loss. (3) Mock USDC: the devnet demo settles in test USDC with no monetary value. (4) Forward-priced mint/redeem: requests are struck at a keeper-set NAV (anti-dilution), and a redemption gate caps each window with a swing fee, so redemptions are neither instant nor guaranteed at the quoted price. The junior-windfall reserve (defends the ~4.5% senior floor, accounting-only, never leaves the vault) and the ~15% ops/insurance USDC buffer reduce but do not eliminate these risks; neither is a guarantee.",
   },
 ];
 
@@ -83,13 +89,14 @@ export function Risks() {
             Risks, before you commit capital.
           </h2>
           <p className="mt-3 text-foreground max-w-2xl leading-relaxed">
-            You can lose your entire deposit. There is no insurance,
-            no clawback, no recovery mechanism.
+            You can lose your entire deposit. For the v0 fleet vault there is
+            no insurance, no clawback, no recovery mechanism. hgMETAL carries a
+            distinct, devnet-stage risk profile, set out separately below.
           </p>
           <p className="mt-3 text-muted-foreground max-w-2xl">
             On-chain yield is real, and so is on-chain loss. The
             transparency that lets you verify every transaction also
-            means every failure mode is visible. The nine categories
+            means every failure mode is visible. The categories
             below are the ones we have identified. There may be others.
           </p>
         </motion.div>
@@ -134,14 +141,15 @@ export function Risks() {
           transition={{ duration: 0.6, delay: 0.4, ease }}
           className="mt-8 text-xs text-muted-foreground/80 max-w-2xl leading-relaxed font-serif italic"
         >
-          The dashboard at{" "}
+          The live demo at{" "}
           <a
-            href="https://dashboard.hedgents.com"
+            href="https://terminal.hedgents.com"
             className="underline hover:text-foreground transition-colors"
           >
-            dashboard.hedgents.com
+            terminal.hedgents.com
           </a>{" "}
-          publishes live position state, the GitHub repo publishes the
+          publishes live position state and lets you buy and sell all three
+          tokens with test USDC on devnet, the GitHub repo publishes the
           source. Verify before depositing. No statement on this site
           should be read as a guarantee of yield, principal preservation,
           or strategy continuity.

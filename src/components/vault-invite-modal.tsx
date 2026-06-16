@@ -130,7 +130,7 @@ export function VaultInviteModal({ open, onClose }: Props) {
             </button>
 
             <div className="text-[10px] uppercase tracking-[0.18em] text-white/40 mb-3">
-              Hedgents Vault · invite-only beta
+              Fleet treasury subscription · invite-only
             </div>
 
             {step === "code" && (
@@ -139,9 +139,11 @@ export function VaultInviteModal({ open, onClose }: Props) {
                   Park USDC. The fleet trades.
                 </h2>
                 <p className="text-sm text-white/60 mb-5 leading-relaxed">
-                  One deposit, three strategies running on-chain. Stable lending +
-                  leveraged ONyc reinsurance NAV + hedged JLP. Non-custodial,
-                  withdraw any time. For people who&apos;d rather not babysit positions.
+                  The v0 fleet is the engine behind hgMETAL, also offered direct as
+                  a treasury subscription. One deposit, three strategies running on
+                  Solana mainnet: stable lending + leveraged ONyc reinsurance NAV +
+                  hedged JLP. Non-custodial, withdraw any time. For treasuries
+                  that&apos;d rather not babysit positions.
                 </p>
                 <form onSubmit={submitCode} className="space-y-3">
                   <label className="block">
