@@ -27,15 +27,15 @@ export function CTA() {
             className="font-serif text-4xl sm:text-5xl font-bold leading-tight mb-5"
             style={{ color: "rgba(255,255,255,0.95)" }}
           >
-            Ready to deploy on your infrastructure?
+            Put metals to work.
           </h2>
           <p
             className="text-base leading-relaxed mb-10 mx-auto max-w-xl"
             style={{ color: "rgba(255,255,255,0.45)" }}
           >
-            Hedgents is in institutional preview. We work directly with each
-            operator to configure the fleet for their infrastructure and
-            risk parameters.
+            hgMETAL is in private beta on devnet, with a venue-verified carry
+            track record. We&apos;re onboarding early allocators and partners ahead
+            of the live-capital launch.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -64,7 +64,7 @@ export function CTA() {
             className="mt-10 font-mono text-[10px] uppercase tracking-widest"
             style={{ color: "rgba(255,255,255,0.15)" }}
           >
-            Paper-trading live · ~8.4% blended APY · $150k notional
+            hgMETAL live on devnet · ~10% venue-verified carry · delta-neutral
           </p>
         </motion.div>
       </div>

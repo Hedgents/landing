@@ -19,11 +19,11 @@ const PRODUCTS = [
     primary: true,
   },
   {
-    badge: "Treasury · subscription",
+    badge: "Infrastructure · also a subscription",
     badgeColor: "rgba(255,255,255,0.5)",
     name: "Hedgents Fleet",
     serif: false,
-    tagline: "Autonomous USDC treasury management.",
+    tagline: "The autonomous engine that runs hgMETAL.",
     body:
       "A role-based agent fleet that runs vetted Solana yield strategies on your own hardware, your keys, no Hedgents server. Each agent has one fixed role: the one that watches risk cannot trade; the ones that trade cannot change their limits. Live on Solana mainnet today; offered as a subscription.",
     points: ["Self-custody · runs on your machines", "Six fixed-role agents · separated powers", "Stable-yield · hedged-JLP · ONyc strategies"],
@@ -45,7 +45,7 @@ export function TwoProducts() {
           className="font-mono text-[10px] uppercase tracking-[0.3em] mb-3"
           style={{ color: "rgba(255,255,255,0.35)" }}
         >
-          Two products
+          The product · and its engine
         </motion.p>
         <motion.h2
           initial={{ opacity: 0, y: 16 }}

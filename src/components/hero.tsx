@@ -69,7 +69,7 @@ export function Hero() {
         >
           Structured metals yield, on-chain.
           <br />
-          Run by an autonomous fleet.
+          Hedged. Tranched. Verifiable.
         </motion.p>
 
         {/* Hook — flagship hgMETAL, then the fleet as a treasury product */}
@@ -89,13 +89,11 @@ export function Hero() {
         </motion.p>
         <motion.p
           {...fade(0.45)}
-          className="mt-4 text-sm sm:text-base leading-relaxed"
-          style={{ color: "rgba(255,255,255,0.45)", maxWidth: "470px" }}
+          className="mt-4 text-xs sm:text-sm leading-relaxed"
+          style={{ color: "rgba(255,255,255,0.4)", maxWidth: "470px" }}
         >
-          It runs on the{" "}
-          <span style={{ color: "rgba(255,255,255,0.75)" }}>Hedgents fleet</span>, an
-          autonomous role-based system that also manages USDC treasuries as a
-          subscription, on your hardware, your keys. Live on Solana mainnet today
+          Under the hood, an autonomous, role-isolated fleet runs it — the same engine
+          has been live on Solana mainnet for months
           {live && (
             <span className="inline-flex items-center gap-1 ml-1.5 align-middle">
               <span className="relative flex h-1.5 w-1.5">
@@ -105,8 +103,8 @@ export function Hero() {
               <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "10px" }}>live</span>
             </span>
           )}{" "}
-          at{" "}
-          <span style={{ color: "var(--gold)", fontWeight: 600 }}>{apy}% blended APY</span>.
+          managing real treasury capital ({apy}% blended). Proven infrastructure, also
+          offered as a standalone subscription.
         </motion.p>
 
         {/* CTAs */}
@@ -182,7 +180,7 @@ export function Hero() {
             className="ml-1 font-mono text-[10px] uppercase tracking-widest"
             style={{ color: "rgba(255,255,255,0.18)" }}
           >
-            six-role fleet
+            the autonomous fleet behind it
           </span>
         </motion.div>
       </div>
