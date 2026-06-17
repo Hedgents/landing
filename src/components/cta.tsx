@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { WaitlistButton } from "@/components/waitlist-modal";
 
 const ease = [0.25, 0.1, 0.25, 1.0] as const;
 
@@ -40,13 +41,11 @@ export function CTA() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <a
-              href="mailto:contact@hedgents.com"
+            <WaitlistButton
+              source="homepage-cta"
               className="inline-flex items-center justify-center rounded px-8 py-3 font-mono text-sm font-semibold transition-opacity hover:opacity-85"
               style={{ backgroundColor: "var(--gold)", color: "var(--navy)" }}
-            >
-              Request access →
-            </a>
+            />
             <a
               href="https://terminal.hedgents.com"
               target="_blank"
@@ -60,6 +59,17 @@ export function CTA() {
               Try the live terminal →
             </a>
           </div>
+
+          <p className="mt-6 text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+            Running a treasury desk? The autonomous fleet is{" "}
+            <a
+              href="mailto:contact@hedgents.com?subject=Hedgents%20fleet%20access"
+              className="underline transition-colors hover:text-white/70"
+            >
+              available by request
+            </a>
+            .
+          </p>
 
           <p
             className="mt-10 font-mono text-[10px] uppercase tracking-widest"
