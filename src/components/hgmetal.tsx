@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { HgMetalTerminal } from "@/components/hgmetal-terminal";
 import { HgMetalReplay } from "@/components/hgmetal-replay";
+import { WaitlistButton } from "@/components/waitlist-modal";
 
 const ease = [0.25, 0.1, 0.25, 1.0] as const;
 
@@ -548,7 +549,7 @@ function Cta() {
             hgMETAL is live on devnet. Buy and sell all three tokens with test
             USDC, right now. The proof shipped on v0; the scale-up is building now.
           </p>
-          <div className="mt-8 flex items-center justify-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <a
               href="https://terminal.hedgents.com"
               target="_blank"
@@ -558,6 +559,10 @@ function Cta() {
             >
               Open the devnet terminal →
             </a>
+            <WaitlistButton
+              source="hgmetal-page"
+              className="inline-flex items-center justify-center rounded px-5 py-2.5 font-mono text-sm text-white/70 hover:text-white border border-white/20 transition-colors"
+            />
             <a
               href="/"
               className="inline-flex items-center justify-center rounded px-5 py-2.5 font-mono text-sm text-white/60 hover:text-white/90 border border-white/15 transition-colors"
