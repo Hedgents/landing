@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { WaitlistButton } from "@/components/waitlist-modal";
 
 // Two-product structure: hgMETAL (flagship) + the treasury fleet, plus
 // the live dashboard. Routes, not homepage anchors.
@@ -67,13 +68,12 @@ export function Navbar() {
           >
             GitHub
           </a>
-          <a
-            href="mailto:contact@hedgents.com"
+          <WaitlistButton
+            source="navbar"
+            label="Join waitlist"
             className="inline-flex items-center justify-center rounded px-3 py-1 font-mono text-xs font-semibold transition-opacity hover:opacity-80"
             style={{ backgroundColor: "var(--gold)", color: "var(--navy)" }}
-          >
-            Request access →
-          </a>
+          />
         </div>
       </nav>
     </motion.header>
