@@ -10,6 +10,7 @@ import { WaitlistButton } from "@/components/waitlist-modal";
 const LINKS = [
   { href: "/fleet", label: "Treasury fleet", gold: false },
   { href: "/dashboard", label: "Dashboard", gold: false },
+  { href: "/blog", label: "Blog", gold: false },
 ];
 
 export function Navbar() {

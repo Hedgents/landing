@@ -25,6 +25,7 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://hedgents.com"),
   title: "Hedgents · structured on-chain metals yield",
   description:
     "hgMETAL: tranched, hedged-carry yield over a precious-metals basket on Solana. A senior coupon (hgUSD) and a levered junior (hgYIELD), powered by an autonomous agent fleet.",
