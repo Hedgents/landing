@@ -4,6 +4,11 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { getPost, posts } from "@/content/posts";
 import { Markdown } from "@/components/markdown";
+import { WaitlistWidget } from "@/components/waitlist-widget";
+
+// Posts may carry a `<!--WAITLIST-->` sentinel on its own line to mark the
+// natural midpoint where the inline mid-article waitlist callout renders.
+const WAITLIST_SENTINEL = "<!--WAITLIST-->";
 
 // Next 16: params is a Promise and must be awaited in dynamic routes.
 type Params = { slug: string };
@@ -58,6 +63,17 @@ export default async function BlogPostPage({
 
   const markdown = await readPostMarkdown(post.file);
 
+  // Split on the sentinel so the mid-article waitlist callout drops into a
+  // natural section break. The sentinel comment itself never renders.
+  const sentinelIndex = markdown.indexOf(WAITLIST_SENTINEL);
+  const hasSentinel = sentinelIndex !== -1;
+  const firstHalf = hasSentinel
+    ? markdown.slice(0, sentinelIndex)
+    : markdown;
+  const secondHalf = hasSentinel
+    ? markdown.slice(sentinelIndex + WAITLIST_SENTINEL.length)
+    : "";
+
   return (
     <main className="bg-background" style={{ color: "var(--foreground)" }}>
       <article className="mx-auto max-w-[720px] px-6 pt-16 pb-24">
@@ -83,10 +99,18 @@ export default async function BlogPostPage({
         {/* The .md already carries its own H1 title, byline, and TL;DR,
             so we render it as-is with no duplicate title. */}
         <div className="markdown-body">
-          <Markdown>{markdown}</Markdown>
+          <Markdown>{firstHalf}</Markdown>
+          {hasSentinel && (
+            <>
+              <WaitlistWidget source="blog-mid" variant="mid" />
+              <Markdown>{secondHalf}</Markdown>
+            </>
+          )}
         </div>
 
-        {/* Footer back-link */}
+        {/* Footer waitlist callout, then the back-link. */}
+        <WaitlistWidget source="blog-footer" variant="footer" />
+
         <hr
           className="my-12 border-0 h-px"
           style={{ backgroundColor: "var(--border)" }}

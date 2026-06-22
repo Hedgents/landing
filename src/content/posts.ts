@@ -11,6 +11,35 @@ export type Post = {
 
 export const posts: Post[] = [
   {
+    slug: "on-chain-commodity-yield-mirage",
+    title:
+      "The On-Chain Commodity-Yield Mirage: What Is Real and What Is Theater",
+    description:
+      "Sorting on-chain metals yield into four buckets: emissions theater, lending and LP, T-bill dollar yield, and the one real metals carry.",
+    date: "2026-06-22",
+    author: "Hedgents Research",
+    file: "on-chain-commodity-yield-mirage.md",
+  },
+  {
+    slug: "delta-neutral-metals-carry",
+    title: "What a Delta-Neutral Metals Position Actually Earns",
+    description:
+      "How shorting a metals perp against tokenized bullion turns price direction into harvestable funding carry, and the gold-plus-silver capacity ceiling that caps it.",
+    date: "2026-06-22",
+    author: "Hedgents Research",
+    file: "delta-neutral-metals-carry.md",
+  },
+  {
+    slug: "tokenized-silver-behind-gold",
+    title:
+      "Tokenized Silver Is Far Behind Tokenized Gold. Here Is Why, and Why It Matters",
+    description:
+      "On-chain gold is a multi-billion-dollar market and tokenized silver is a rounding error next to it. The gap is structural, not permanent.",
+    date: "2026-06-22",
+    author: "Hedgents Research",
+    file: "tokenized-silver-behind-gold.md",
+  },
+  {
     slug: "tokenized-metals-shelf",
     title:
       "The Tokenized-Metals Shelf Is Crowded. The Index On Top Of It Is Empty.",

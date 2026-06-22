@@ -56,6 +56,8 @@ That structure has not dissolved in the more than two decades since GLD launched
 
 ---
 
+<!--WAITLIST-->
+
 ## What concentrating in one token costs
 
 If fragmentation is permanent, single-token concentration carries a real, stackable cost. An allocator holding 100% in one issuer holds 100% of the exposure to that issuer's failure modes: custodian or operational failure, regulatory action against the issuer, a mint-and-redeem contract exploit, a bridge exploit (relevant for any bridged variant), or a sovereign action against the custody jurisdiction. The same single position also concentrates liquidity (one token's DEX depth sets your exit slippage), concentrates geography and regulatory regime, and pushes all the monitoring onto you: attestations, regulator actions, bridge security, and depeg spreads, multiplied by every token you would need to hold to actually be diversified. Spreading across four or five issuers cuts per-failure exposure toward 20-25% and lets exits route to whichever underlying is deepest at the moment of need. None of that work produces alpha. It is pure risk management, and most holders never do it.
