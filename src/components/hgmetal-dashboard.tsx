@@ -121,7 +121,8 @@ function Dash() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
           <div className="rounded-xl border border-white/10 bg-black/20 p-4">
             <div style={{ color: GOLD }} className="font-mono font-bold">hgMETAL</div>
-            <div className="text-white font-mono text-xl mt-1">{t.hgMETAL.change24hPct >= 0 ? "+" : ""}{t.hgMETAL.change24hPct.toFixed(2)}% <span className="text-xs" style={{ color: DIM }}>24h idx</span></div>
+            {/* AUDIT_v2 FE-3: 4-metal index 24h move; NaN when HL ctx is unavailable. */}
+            <div className="text-white font-mono text-xl mt-1">{Number.isFinite(t.hgMETAL.change24hPct) ? `${t.hgMETAL.change24hPct >= 0 ? "+" : ""}${t.hgMETAL.change24hPct.toFixed(2)}%` : "—"} <span className="text-xs" style={{ color: DIM }}>24h idx</span></div>
             <div style={{ color: DIM }} className="font-mono text-xs mt-1">in-kind metals index · no yield overlay</div>
           </div>
           <div className="rounded-xl border border-white/10 bg-black/20 p-4">
@@ -132,7 +133,10 @@ function Dash() {
           <div className="rounded-xl border border-white/10 bg-black/20 p-4">
             <div style={{ color: GREEN }} className="font-mono font-bold">hgYIELD</div>
             <div className="text-white font-mono text-xl mt-1">{money(t.hgYIELD.priceUsd, 4)}</div>
-            <div style={{ color: DIM }} className="font-mono text-xs mt-1">{t.hgYIELD.aprPct >= 0 ? "+" : ""}{t.hgYIELD.aprPct.toFixed(1)}% APR · junior · first-loss NAV</div>
+            {/* AUDIT_v2 H4/FE-TERM-1: this is a forward implied carry from live HL
+                funding, not realized on-chain yield. Never label it "realized". */}
+            <div style={{ color: DIM }} className="font-mono text-xs mt-1">{t.hgYIELD.aprPct >= 0 ? "+" : ""}{t.hgYIELD.aprPct.toFixed(1)}% projected APR · junior · first-loss NAV</div>
+            <div style={{ color: DIM }} className="font-mono text-[10px] mt-1 leading-relaxed">forward implied carry from live Hyperliquid funding — not realized on-chain yield</div>
           </div>
         </div>
 
