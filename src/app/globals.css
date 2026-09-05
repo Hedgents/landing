@@ -50,42 +50,42 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Cream / Navy / Gold — matches pitch deck */
+/* Mercury silver / assay graphite / restrained gold */
 :root {
-  /* Brand constants */
-  --navy: oklch(0.24 0.09 262);
-  --gold: oklch(0.71 0.11 72);
+  --graphite: #171918;
+  --silver: #a5aaa7;
+  --navy: #171918;
+  --gold: #c79b47;
 
-  /* Surface */
-  --background: oklch(0.93 0.028 82);     /* warm cream */
-  --foreground: oklch(0.24 0.09 262);     /* navy */
+  --background: #e9e5db;
+  --foreground: #171918;
 
   /* Card (off-white warm) */
-  --card: oklch(0.98 0.010 82);
-  --card-foreground: oklch(0.24 0.09 262);
+  --card: #f3efe5;
+  --card-foreground: #171918;
 
-  --popover: oklch(0.98 0.010 82);
-  --popover-foreground: oklch(0.24 0.09 262);
+  --popover: #f3efe5;
+  --popover-foreground: #171918;
 
   /* Primary = navy (buttons, headings) */
-  --primary: oklch(0.24 0.09 262);
-  --primary-foreground: oklch(0.98 0.010 82);
+  --primary: #171918;
+  --primary-foreground: #f3efe5;
 
-  --secondary: oklch(0.88 0.025 82);
-  --secondary-foreground: oklch(0.24 0.09 262);
+  --secondary: #dcd8ce;
+  --secondary-foreground: #171918;
 
-  --muted: oklch(0.88 0.022 82);
-  --muted-foreground: oklch(0.45 0.06 262);
+  --muted: #dcd8ce;
+  --muted-foreground: #626764;
 
   /* Accent = gold */
-  --accent: oklch(0.71 0.11 72);
-  --accent-foreground: oklch(0.24 0.09 262);
+  --accent: #c79b47;
+  --accent-foreground: #171918;
 
   --destructive: oklch(0.55 0.22 25);
 
-  --border: oklch(0.83 0.022 82);
-  --input: oklch(0.83 0.022 82);
-  --ring: oklch(0.71 0.11 72);
+  --border: #c7c2b8;
+  --input: #c7c2b8;
+  --ring: #c79b47;
 
   --chart-1: oklch(0.24 0.09 262);
   --chart-2: oklch(0.71 0.11 72);
@@ -95,14 +95,14 @@
 
   --radius: 0.3rem;
 
-  --sidebar: oklch(0.24 0.09 262);
-  --sidebar-foreground: oklch(0.98 0.010 82);
-  --sidebar-primary: oklch(0.71 0.11 72);
-  --sidebar-primary-foreground: oklch(0.24 0.09 262);
-  --sidebar-accent: oklch(0.30 0.09 262);
-  --sidebar-accent-foreground: oklch(0.98 0.010 82);
-  --sidebar-border: oklch(0.32 0.08 262);
-  --sidebar-ring: oklch(0.71 0.11 72);
+  --sidebar: #171918;
+  --sidebar-foreground: #f3efe5;
+  --sidebar-primary: #c79b47;
+  --sidebar-primary-foreground: #171918;
+  --sidebar-accent: #242725;
+  --sidebar-accent-foreground: #f3efe5;
+  --sidebar-border: #343835;
+  --sidebar-ring: #c79b47;
 }
 
 @layer base {
@@ -114,10 +114,46 @@
   }
   html {
     @apply font-sans;
-    /* proximity (not mandatory): snaps gently when you stop near a
-       full-height section, but lets you rest anywhere — including on
-       content sections taller than the viewport (e.g. the two-product
-       section). mandatory yanked the scroll off those. */
-    scroll-snap-type: y proximity;
+  }
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--graphite);
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.waitlist-backdrop {
+  animation: waitlist-fade 160ms ease-out both;
+}
+
+.waitlist-dialog {
+  animation: waitlist-rise 200ms ease-out both;
+}
+
+@keyframes waitlist-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes waitlist-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .waitlist-backdrop,
+  .waitlist-dialog {
+    animation: none;
   }
 }
