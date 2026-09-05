@@ -7,6 +7,7 @@
 // polls. All data is public devnet state.
 
 import { NextResponse } from "next/server";
+import { HEDGED_CARRY_W, HEDGED_CARRY_FEES_PCT, HRS_PER_YEAR } from "@/lib/hedged-carry";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -14,6 +15,21 @@ export const revalidate = 0;
 const RPC = "https://api.devnet.solana.com";
 const HERMES = "https://hermes.pyth.network";
 const VAULT = "51q5A3wx53UjoFco8Zwt3zesNn2ePpFd9TS2tW9gMYhP";
+
+// AUDIT_v2 FE-6: short TTL response cache + AbortController-bounded fetches so
+// the 8s dashboard poll (and multiple clients) doesn't hammer devnet RPC.
+const READ_TTL_MS = 4_000;
+const _readCache: { t: number; json: unknown } = ((globalThis as any).__hgVaultReadCacheLanding ??= { t: 0, json: null });
+const FETCH_TIMEOUT_MS = 4_000;
+async function fetchT(url: string, init?: RequestInit): Promise<Response> {
+  const ac = new AbortController();
+  const id = setTimeout(() => ac.abort(), FETCH_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...init, signal: ac.signal });
+  } finally {
+    clearTimeout(id);
+  }
+}
 
 const METALS = [
   { sym: "XAU", name: "Gold", feedId: "765d2ba906dbc32ca17cc11f5310a89e9ee1f6420508c63861f2f8ba4ee34bb2" },
@@ -51,8 +67,37 @@ function readU128LE(buf: Buffer, off: number): bigint {
 }
 const toUsd = (uusdc: bigint) => Number(uusdc) / 1e6;
 
+// Recent realized basket carry from gold/silver HL funding, net of fees.
+// AUDIT_v2 FE-3: parity with the terminal route — cached 1h so the trailing
+// 30d funding (which barely moves intra-hour) isn't re-pulled every poll.
+let _carryCache: { t: number; val: number | null } = { t: 0, val: null };
+async function realizedBasketCarryPct(): Promise<number | null> {
+  const now = Date.now();
+  if (_carryCache.val != null && now - _carryCache.t < 3_600_000) return _carryCache.val;
+  try {
+    const startTime = now - 30 * 24 * 3600 * 1000;
+    const hist = async (coin: string) => {
+      const r = await fetchT("https://api.hyperliquid.xyz/info", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "fundingHistory", coin, startTime, endTime: now }), cache: "no-store",
+      });
+      const h = await r.json();
+      if (!Array.isArray(h) || !h.length) return null;
+      const avg = h.reduce((a: number, x: any) => a + Number(x.fundingRate), 0) / h.length;
+      return avg * 24 * 365 * 100; // annualized %
+    };
+    const [g, s] = await Promise.all([hist("xyz:GOLD"), hist("xyz:SILVER")]);
+    if (g == null || s == null) return _carryCache.val;
+    const net = HEDGED_CARRY_W.GOLD * g + HEDGED_CARRY_W.SILVER * s - HEDGED_CARRY_FEES_PCT;
+    _carryCache = { t: now, val: net };
+    return net;
+  } catch {
+    return _carryCache.val;
+  }
+}
+
 async function rpc(method: string, params: unknown[]): Promise<any> {
-  const res = await fetch(RPC, {
+  const res = await fetchT(RPC, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
@@ -71,6 +116,11 @@ async function getAccount(addr: string): Promise<Buffer | null> {
 
 export async function GET() {
   try {
+    // AUDIT_v2 FE-6: serve a fresh-enough cached payload to spare devnet RPC.
+    if (_readCache.json && Date.now() - _readCache.t < READ_TTL_MS) {
+      return NextResponse.json(_readCache.json);
+    }
+
     const data = await getAccount(VAULT);
     if (!data) {
       return NextResponse.json({ ok: false, error: "vault account not found" }, { status: 404 });
@@ -135,13 +185,16 @@ export async function GET() {
     const ids = METALS.map((m) => `ids[]=${m.feedId}`).join("&");
     let live: Record<string, number> = {};
     try {
-      const hr = await fetch(`${HERMES}/v2/updates/price/latest?${ids}&parsed=true`, {
+      const hr = await fetchT(`${HERMES}/v2/updates/price/latest?${ids}&parsed=true`, {
         cache: "no-store",
       });
       const hj = await hr.json();
       for (const p of hj.parsed ?? []) {
         const sym = METALS.find((m) => m.feedId === p.id)?.sym;
-        if (sym) live[sym] = Number(p.price.price) * Math.pow(10, p.price.expo);
+        const px = Number(p.price.price) * Math.pow(10, p.price.expo);
+        // AUDIT_v2 FE-6: only a strictly-positive finite quote counts as live;
+        // a 0/NaN quote falls through to the cached on-chain price below.
+        if (sym && Number.isFinite(px) && px > 0) live[sym] = px;
       }
     } catch {
       // fall back to cached prices below
@@ -163,15 +216,31 @@ export async function GET() {
     });
     const basketLiveValue = metals.reduce((a, m) => a + m.valueUsd, 0);
 
+    // ── paper short notional (delta hedge) + hedge ratio ─────────────
+    // AUDIT_v2 FE-3: parity with the terminal route. PaperPerpState starts
+    // right after the 8-slot basket (332 + 8*160 = 1612).
+    const perpShortUsd = toUsd(readU128LE(data, 1612));
+    const hedgeRatioPct = basketLiveValue > 0 ? (perpShortUsd / basketLiveValue) * 100 : 0;
+
+    // ── junior-windfall reserve war-chest (4th NAV bucket) + config ──
+    const reserveUsd = toUsd(readU128LE(data, 1765));
+    const reserveFloorBps = data.readUInt16LE(1781);
+    const reserveSkimThresholdBps = data.readUInt16LE(1783);
+    const reserveSkimBps = data.readUInt16LE(1785);
+
     // ── live HL carry (for implied tranche APRs) + hgMETAL index 24h ──
-    // Weighted: gold/silver-heavy, Pt/Pd small (thin OI caps).
-    const CARRY_W: Record<string, number> = { GOLD: 0.45, SILVER: 0.35, PLATINUM: 0.1, PALLADIUM: 0.1 };
-    // hgMETAL is an in-kind metals INDEX with no yield overlay; basket carry is
-    // pure funding net of fees (no synthetic gold-lease yield add-on).
-    const FEES = 1.5, HRS_YR = 24 * 365;
+    // AUDIT_v2 FE-2/FE-3: hedged carry uses the SHARED 75/25 gold/silver
+    // weighting (the hedged book is gold/silver only; Pt/Pd are never shorted).
+    const CARRY_W = HEDGED_CARRY_W;
+    const FEES = HEDGED_CARRY_FEES_PCT, HRS_YR = HRS_PER_YEAR;
+    // The hgMETAL 24h tile is a 4-metal INDEX move (gold/silver/platinum/
+    // palladium), a SEPARATE concern from the gold/silver hedged carry. Use an
+    // explicit 4-metal display weighting so the tile reflects the index, not
+    // just the two hedged legs.
+    const INDEX_24H_W: Record<string, number> = { GOLD: 0.45, SILVER: 0.2, PLATINUM: 0.15, PALLADIUM: 0.12 };
     let basketCarryPct = 0, metalIndex24hPct = 0;
     try {
-      const hr = await fetch("https://api.hyperliquid.xyz/info", {
+      const hr = await fetchT("https://api.hyperliquid.xyz/info", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "metaAndAssetCtxs", dex: "xyz" }),
@@ -179,33 +248,44 @@ export async function GET() {
       });
       const hj = await hr.json();
       const uni = hj[0]?.universe ?? [], ctx = hj[1] ?? [];
-      let wsum = 0;
+      let idxWsum = 0;
       for (let i = 0; i < uni.length; i++) {
         const sym = String(uni[i].name).split(":").pop()!.toUpperCase();
-        const w = CARRY_W[sym];
-        if (!w || !ctx[i]) continue;
-        const fundingAnn = Number(ctx[i].funding) * HRS_YR * 100;
-        basketCarryPct += w * fundingAnn;
-        const mark = Number(ctx[i].markPx), prev = Number(ctx[i].prevDayPx);
-        if (mark && prev) metalIndex24hPct += w * ((mark / prev - 1) * 100);
-        wsum += w;
+        if (!ctx[i]) continue;
+        // hedged carry: gold/silver only (75/25)
+        const cw = CARRY_W[sym];
+        if (cw) {
+          const fundingAnn = Number(ctx[i].funding) * HRS_YR * 100;
+          basketCarryPct += cw * fundingAnn;
+        }
+        // hgMETAL index 24h: all 4 metals, separate weighting
+        const iw = INDEX_24H_W[sym];
+        if (iw) {
+          const mark = Number(ctx[i].markPx), prev = Number(ctx[i].prevDayPx);
+          if (mark && prev) { metalIndex24hPct += iw * ((mark / prev - 1) * 100); idxWsum += iw; }
+        }
       }
       basketCarryPct -= FEES;
-      if (wsum) metalIndex24hPct /= wsum;
+      if (idxWsum) metalIndex24hPct /= idxWsum; else metalIndex24hPct = NaN;
     } catch {
       basketCarryPct = NaN;
+      metalIndex24hPct = NaN;
     }
+    const basketCarryRealizedPct = await realizedBasketCarryPct();
 
-    // Implied tranche APRs: senior at its 5% target; junior = the residual
-    // carry on its base (deployed ~ total NAV).
+    // Implied tranche APRs: senior at its 5% target; junior = the residual.
+    // AUDIT_v2 FE-3: carry is earned on the DEPLOYED hedged sleeve
+    // (basketLiveValue == short notional), not on total NAV (which includes
+    // idle USDC). Parity with the terminal route.
     const SENIOR_TARGET = 5;
-    const grossCarryUsd = Number.isNaN(basketCarryPct) ? 0 : (basketCarryPct / 100) * totalNav;
+    const grossCarryUsd = Number.isNaN(basketCarryPct) ? 0 : (basketCarryPct / 100) * basketLiveValue;
     const seniorCouponUsd = (SENIOR_TARGET / 100) * seniorNav;
     const juniorAprPct = juniorNav > 0 ? ((grossCarryUsd - seniorCouponUsd) / juniorNav) * 100 : 0;
 
     const tickers = {
       hgUSD: { label: "senior", priceUsd: seniorSupply ? seniorNav / seniorSupply : 1, aprPct: SENIOR_TARGET },
       hgYIELD: { label: "junior", priceUsd: juniorSupply ? juniorNav / juniorSupply : 1, aprPct: juniorAprPct },
+      // change24hPct is the 4-metal index 24h move (NaN if HL ctx unavailable).
       hgMETAL: { label: "index", change24hPct: metalIndex24hPct, yieldPct: 0 },
     };
 
@@ -229,7 +309,7 @@ export async function GET() {
       decision,
     };
 
-    return NextResponse.json({
+    const payload = {
       fleet,
       ok: true,
       fetchedAt: Date.now(),
@@ -239,8 +319,16 @@ export async function GET() {
       mockUsdcMint: "6sgKwTvosM3UybKZbi1qEi5TNm8pi3nhbdg4PXaiHwzs",
       metals,
       basketLiveValue,
+      // AUDIT_v2 FE-3: reserve + hedge fields, parity with the terminal route.
+      perpShortUsd,
+      hedgeRatioPct,
+      reserveUsd,
+      reserveFloorBps,
+      reserveSkimThresholdBps,
+      reserveSkimBps,
       usdcReserve,
       basketCarryPct,
+      basketCarryRealizedPct,
       tickers,
       nav: {
         total: totalNav,
@@ -252,7 +340,11 @@ export async function GET() {
         seniorPx: seniorSupply ? seniorNav / seniorSupply : 1,
         juniorPx: juniorSupply ? juniorNav / juniorSupply : 1,
       },
-    });
+    };
+    // AUDIT_v2 FE-6: cache the fresh payload for the short TTL window.
+    _readCache.t = Date.now();
+    _readCache.json = payload;
+    return NextResponse.json(payload);
   } catch (err) {
     console.error("hgmetal-vault read failed", err);
     return NextResponse.json({ ok: false, error: "vault read failed" }, { status: 502 });

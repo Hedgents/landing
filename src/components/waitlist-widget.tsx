@@ -14,8 +14,8 @@ export function WaitlistWidget({
   const isFooter = variant === "footer";
 
   const headline = isFooter
-    ? "Join the hgMETAL waitlist"
-    : "Get the hedged-carry launch";
+    ? "Trade metals across onchain markets."
+    : "Follow the metal execution network";
 
   return (
     <aside
@@ -53,14 +53,13 @@ export function WaitlistWidget({
         ].join(" ")}
         style={{ color: "var(--muted-foreground)" }}
       >
-        hgMETAL is live on Solana devnet with a paper hedge and no live-capital
-        track record yet. Join the waitlist to hear when the live-capital launch
-        opens.
+        We are verifying the first gold and silver products, execution paths, and Metal
+        Passports. Join early access to follow the build and test the first trades.
       </p>
       <div className={isFooter ? "mt-6 flex justify-center" : "mt-5"}>
         <WaitlistButton
           source={source}
-          label="Join the waitlist"
+          label="Request early access"
           className="inline-block rounded-lg px-5 py-2.5 font-mono text-sm font-semibold transition-opacity hover:opacity-85"
           style={{ backgroundColor: "var(--gold)", color: "var(--navy)" }}
         />

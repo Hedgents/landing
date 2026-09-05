@@ -1,15 +1,14 @@
 "use client";
 
 import { useState, type CSSProperties } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 
-// hgMETAL v1 waitlist → shared Cloudflare Worker + D1 (hedgents-waitlist).
+// Shared Cloudflare Worker + D1 waitlist endpoint.
 const WAITLIST_API = "https://hedgents-waitlist.guanyidu98.workers.dev";
 
 export function WaitlistButton({
   className,
   style,
-  label = "Join the waitlist",
+  label = "Request early access",
   source = "landing",
 }: {
   className?: string;
@@ -55,29 +54,31 @@ function WaitlistModal({ open, onClose, source }: { open: boolean; onClose: () =
     }
   };
 
+  if (!open) return null;
+
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        <div
+          className="waitlist-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
           onClick={onClose}
         >
-          <motion.div
-            className="w-full max-w-md rounded-2xl border p-7"
-            style={{ backgroundColor: "var(--navy)", borderColor: "rgba(201,168,76,0.3)" }}
-            initial={{ opacity: 0, y: 16, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.98 }}
+          <div
+            className="waitlist-dialog w-full max-w-md rounded-2xl border p-7"
+            style={{ backgroundColor: "var(--graphite)", borderColor: "rgba(199,155,71,0.38)" }}
             onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="waitlist-title"
           >
-            <h3 className="font-serif text-2xl font-bold text-white">Join the hgMETAL waitlist</h3>
+            <p className="font-mono text-[9px] font-semibold uppercase tracking-[0.18em] text-[#c79b47]">
+              Hedgents · early access
+            </p>
+            <h3 id="waitlist-title" className="mt-3 font-serif text-3xl font-bold leading-tight text-white">
+              Trade metals across onchain markets.
+            </h3>
             <p className="mt-2 text-sm leading-relaxed text-white/55">
-              Get notified when the live-capital launch opens. Today it is live on devnet with a paper
-              hedge and no live-capital track record.
+              Join product verification and trade testing for the first gold and
+              silver products. Optional hedging follows where a liquid market exists.
             </p>
             {done ? (
               <div className="mt-5 rounded-lg border border-emerald-400/30 bg-emerald-400/5 px-4 py-3 text-sm text-emerald-300">
@@ -102,19 +103,19 @@ function WaitlistModal({ open, onClose, source }: { open: boolean; onClose: () =
                   style={{ borderColor: "rgba(255,255,255,0.15)" }}
                 >
                   <option value="">What interests you most? (optional)</option>
-                  <option value="senior">hgUSD senior coupon</option>
-                  <option value="junior">hgYIELD junior yield</option>
-                  <option value="index">the hgMETAL index</option>
-                  <option value="building">building on it</option>
+                  <option value="buy-metals">Owning metals on Solana</option>
+                  <option value="compare-products">Comparing metal products</option>
+                  <option value="hedge">Hedging through Hyperliquid</option>
+                  <option value="integration">Integrating as a partner</option>
                 </select>
                 {err && <div className="mt-3 text-xs text-amber-400">{err}</div>}
                 <button
                   type="submit"
                   disabled={busy}
                   className="mt-5 w-full rounded-lg px-5 py-2.5 font-mono text-sm font-semibold transition-opacity hover:opacity-85 disabled:opacity-50"
-                  style={{ backgroundColor: "var(--gold)", color: "var(--navy)" }}
+                  style={{ backgroundColor: "var(--gold)", color: "var(--graphite)" }}
                 >
-                  {busy ? "…" : "Join waitlist"}
+                  {busy ? "…" : "Request early access"}
                 </button>
               </form>
             )}
@@ -125,9 +126,7 @@ function WaitlistModal({ open, onClose, source }: { open: boolean; onClose: () =
             >
               close
             </button>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          </div>
+        </div>
   );
 }

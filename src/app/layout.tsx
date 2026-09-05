@@ -4,8 +4,6 @@ import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Background } from "@/components/background";
-import { LoadingScreen } from "@/components/loading-screen";
-import { PageEntrance } from "@/components/page-entrance";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,32 +24,42 @@ const playfairDisplay = Playfair_Display({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hedgents.com"),
-  title: "Hedgents · structured on-chain metals yield",
+  title: "Hedgents · Trade metals onchain",
   description:
-    "hgMETAL: tranched, hedged-carry yield over a precious-metals basket on Solana. A senior coupon (hgUSD) and a levered junior (hgYIELD), powered by an autonomous agent fleet.",
+    "Discover, compare, and trade metal products across supported onchain markets through one self-custodial interface.",
   keywords: [
-    "hgMETAL",
-    "metals yield",
-    "structured products",
-    "tranching",
-    "DeFi",
+    "metals on Solana",
+    "tokenized metals",
+    "gold on Solana",
+    "silver on Solana",
+    "metal trading",
+    "onchain metal trading",
     "Solana",
-    "hedged carry",
-    "autonomous agents",
+    "Hyperliquid",
   ],
   icons: {
-    icon: [
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-    ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    icon: [{ url: "/brand/hedgents-source-app-icon.png", type: "image/png" }],
   },
   openGraph: {
-    title: "Hedgents · structured on-chain metals yield",
+    title: "Hedgents · Trade metals onchain",
     description:
-      "hgMETAL: tranched, hedged-carry yield over a precious-metals basket on Solana, powered by an autonomous agent fleet.",
+      "One interface to discover, compare, and trade metal products across supported chains and venues.",
     url: "https://hedgents.com",
     type: "website",
+    images: [
+      {
+        url: "/brand/hedgents-source-app-icon.png",
+        width: 330,
+        height: 330,
+        alt: "Hedgents Hg mark",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: "Hedgents · Metal execution network",
+    description: "One interface for onchain metal markets.",
+    images: ["/brand/hedgents-source-app-icon.png"],
   },
 };
 
@@ -66,10 +74,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} h-full antialiased scroll-smooth`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <LoadingScreen />
         <Background />
         <Navbar />
-        <PageEntrance>{children}</PageEntrance>
+        <main className="flex-1">{children}</main>
         <Footer />
       </body>
     </html>

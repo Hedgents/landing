@@ -73,10 +73,11 @@ function Hero() {
             hg<span style={{ color: GOLD }}>METAL</span>
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-white/70 leading-relaxed">
-            Metals-focused structured products on Solana, spanning gold, silver,
-            platinum and palladium. Run by an autonomous, role-isolated
-            agent fleet that actively rebalances across cross-metal strategies,
-            then tranches the output into senior and junior products.
+            A tiered metals desk on Solana. Gold and silver run live today as
+            structured products, tranched into senior and junior by an
+            autonomous, role-isolated agent fleet. The North Star is every
+            metal, each offered only through the instrument its price data can
+            honestly support.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -269,6 +270,113 @@ function ProductFamily() {
   );
 }
 
+// ── The metals universe (trade all metals) ───────────────────────
+const URANIUM = "oklch(0.78 0.17 135)";
+
+function MetalsUniverse() {
+  return (
+    <Section id="universe">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, ease }}
+        className="mb-10"
+      >
+        <Eyebrow>03 / The universe</Eyebrow>
+        <h2 className="font-serif text-4xl sm:text-5xl font-bold text-foreground leading-tight">
+          Trade all metals on Solana.
+        </h2>
+        <p className="mt-4 text-muted-foreground leading-relaxed max-w-2xl">
+          The three tokens above are gold and silver today. They are also the
+          beginning. hgMETAL is a tiered desk: each metal offered only through
+          the instrument its price data can honestly support, sorted by one
+          question — is there a future or a liquid ETF to hedge it. Metals with
+          no honest anchor are excluded, not faked. Breadth is a roadmap, never
+          a claim.
+        </p>
+      </motion.div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease }}
+          className="rounded-lg border border-border/60 bg-background p-6"
+          style={{ borderTop: `2px solid ${URANIUM}` }}
+        >
+          <div className="flex items-baseline justify-between">
+            <span className="font-serif text-xl font-bold text-foreground">Track A</span>
+            <span
+              className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded"
+              style={{ color: URANIUM, backgroundColor: `color-mix(in oklch, ${URANIUM} 12%, transparent)` }}
+            >
+              Speculative desk
+            </span>
+          </div>
+          <p className="mt-2 font-medium text-foreground/90">Hot-narrative metals, crypto-native.</p>
+          <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+            Metals with a real story and a liquid hedge, launched from a
+            ring-fenced entity as disclosed proxy exposure. First up:{" "}
+            <span style={{ color: URANIUM }}>uranium</span>, a proxy to Sprott&apos;s
+            physical trust. You cannot self-custody it, so it is honestly a bet
+            on the price, the nuclear-renaissance and AI-power thesis, wrapped
+            without pretending to be savings.
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.08, ease }}
+          className="rounded-lg border border-border/60 bg-background p-6"
+          style={{ borderTop: `2px solid ${GOLD}` }}
+        >
+          <div className="flex items-baseline justify-between">
+            <span className="font-serif text-xl font-bold text-foreground">Track B</span>
+            <span
+              className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded"
+              style={{ color: GOLD, backgroundColor: `color-mix(in oklch, ${GOLD} 12%, transparent)` }}
+            >
+              Trust product
+            </span>
+          </div>
+          <p className="mt-2 font-medium text-foreground/90">Gold and silver, run for keeps.</p>
+          <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+            The carry vault and in-kind index you can use today: regulated,
+            trust-first, funded like a real business, never fused with a token
+            raise. The deep, liquid, precious end of the desk, where the moat is
+            depth, not breadth.
+          </p>
+        </motion.div>
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.12, ease }}
+        className="mt-6"
+      >
+        <a
+          href="https://terminal.hedgents.com/metals"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center rounded px-5 py-2.5 font-mono text-sm font-semibold transition-opacity hover:opacity-80"
+          style={{ backgroundColor: URANIUM, color: "var(--navy)" }}
+        >
+          Explore the full metals universe →
+        </a>
+        <p className="mt-3 font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70">
+          ~40 metals, tiered by hedgeability · live → roadmap → excluded
+        </p>
+      </motion.div>
+    </Section>
+  );
+}
+
 // ── The metals fleet ──────────────────────────────────────────────
 
 type Auth = "signs" | "routes" | "read";
@@ -297,7 +405,7 @@ function MetalsFleet() {
         transition={{ duration: 0.6, ease }}
         className="mb-10"
       >
-        <Eyebrow>03 / The metals fleet</Eyebrow>
+        <Eyebrow>04 / The metals fleet</Eyebrow>
         <h2 className="font-serif text-4xl sm:text-5xl font-bold text-foreground leading-tight">
           Cross-metal strategy, role-isolated.
         </h2>
@@ -368,7 +476,7 @@ function LiveOnDevnet() {
         transition={{ duration: 0.6, ease }}
         className="mb-10"
       >
-        <Eyebrow>04 / Built, not promised</Eyebrow>
+        <Eyebrow>05 / Built, not promised</Eyebrow>
         <h2 className="font-serif text-4xl sm:text-5xl font-bold text-foreground leading-tight">
           The settlement layer is live on devnet.
         </h2>
@@ -468,7 +576,7 @@ function ReplaySection() {
         transition={{ duration: 0.6, ease }}
         className="mb-8"
       >
-        <Eyebrow>05 / Replay</Eyebrow>
+        <Eyebrow>06 / Replay</Eyebrow>
         <h2 className="font-serif text-4xl sm:text-5xl font-bold text-foreground leading-tight">
           Drag through the history.
         </h2>
@@ -504,7 +612,7 @@ function LiveTerminal() {
         transition={{ duration: 0.6, ease }}
         className="mb-8"
       >
-        <Eyebrow>06 / Live terminal</Eyebrow>
+        <Eyebrow>07 / Live terminal</Eyebrow>
         <h2 className="font-serif text-4xl sm:text-5xl font-bold text-foreground leading-tight">
           Watch the vault, live.
         </h2>
@@ -618,6 +726,7 @@ export function HgMetal() {
       <div className="bg-background">
         <ProofScaleUp />
         <ProductFamily />
+        <MetalsUniverse />
         <MetalsFleet />
         <LiveOnDevnet />
         <ReplaySection />

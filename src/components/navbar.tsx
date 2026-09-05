@@ -1,82 +1,42 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { HedgentsLogo } from "@/components/hedgents-logo";
 import { WaitlistButton } from "@/components/waitlist-modal";
 
-// Two-product structure: hgMETAL (flagship) + the treasury fleet, plus
-// the live dashboard. Routes, not homepage anchors.
 const LINKS = [
-  { href: "/fleet", label: "Treasury fleet", gold: false },
-  { href: "/dashboard", label: "Dashboard", gold: false },
-  { href: "/blog", label: "Blog", gold: false },
+  { href: "/#how-it-works", label: "Passport" },
+  { href: "/#metals", label: "Metals" },
 ];
 
 export function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
-    <motion.header
-      className={cn(
-        "sticky top-0 z-50 w-full transition-colors duration-300",
-        scrolled ? "border-b border-white/10 backdrop-blur-xl" : ""
-      )}
-      style={{ backgroundColor: "var(--navy)" }}
-    >
-      <nav className="mx-auto flex h-12 max-w-6xl items-center justify-between px-6">
-        {/* Logo — always returns to home */}
-        <a href="/" className="flex items-center gap-2.5 group">
-          <img src="/logo.jpg" alt="Hedgents" className="h-5 w-auto" />
-          <span className="font-serif text-sm font-bold text-white group-hover:opacity-80 transition-opacity">
-            hedgents
-          </span>
-        </a>
+    <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-[#171918] text-white">
+      <nav className="mx-auto flex h-16 max-w-[1220px] items-center justify-between px-5 sm:px-7">
+        <HedgentsLogo inverse />
 
-        {/* Nav links — product routes */}
-        <div className="hidden md:flex items-center gap-0.5">
-          <a
-            href="/hgmetal"
-            className="px-3 py-1.5 text-xs transition-colors font-mono"
-            style={{ color: "var(--gold)" }}
-          >
-            hgMETAL
-          </a>
-          {LINKS.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="px-3 py-1.5 text-xs text-white/50 hover:text-white/90 transition-colors font-mono"
+        <div className="hidden items-center lg:flex">
+          {LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="border-l border-white/10 px-5 py-1 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-white/45 transition-colors hover:text-white"
             >
-              {l.label}
-            </a>
+              {link.label}
+            </Link>
           ))}
+          <Link
+            href="/blog"
+            className="border-x border-white/10 px-5 py-1 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-white/45 transition-colors hover:text-white"
+          >
+            Journal
+          </Link>
         </div>
 
-        {/* CTA */}
-        <div className="flex items-center gap-3">
-          <a
-            href="https://github.com/Hedgents/fleet"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-white/40 hover:text-white/70 transition-colors font-mono"
-          >
-            GitHub
-          </a>
-          <WaitlistButton
-            source="navbar"
-            label="Join waitlist"
-            className="inline-flex items-center justify-center rounded px-3 py-1 font-mono text-xs font-semibold transition-opacity hover:opacity-80"
-            style={{ backgroundColor: "var(--gold)", color: "var(--navy)" }}
-          />
-        </div>
+        <WaitlistButton
+          source="navbar-metal-router"
+          label="Request access"
+          className="min-h-9 cursor-pointer border border-[#c79b47] bg-[#c79b47] px-3.5 font-mono text-[9px] font-bold uppercase tracking-[0.08em] text-[#171918] transition-colors hover:bg-transparent hover:text-[#c79b47] sm:px-4"
+        />
       </nav>
-    </motion.header>
+    </header>
   );
 }
